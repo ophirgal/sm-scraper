@@ -104,7 +104,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+# env/
 venv/
 ENV/
 env.bak/
@@ -127,3 +127,21 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# shu put here
+temp/
+help/
+help
+_notes.txt
+*.sublime-workspace
+**/___*
+**/__pycache__
+**/.ipynb_checkpoints
+**/.directory
+**/.Trash*
+**/.empty
+**/slurm-*
+**/runs
+
+
