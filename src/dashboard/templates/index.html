@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+
+<head>
+<title>Reddit Police Brutality Dashboard</title>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+
+<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+<div class="top-bar">
+  <h3>CMSC828D: Reddit Police Brutality Activity Dashboard</h3>
+</div>
+
+<div class="row">
+  <div class="column query-col">
+    <div class="col-title">
+      Query Filters
+    </div>
+    <form>
+      <input type="text" id="fname" name="fname">
+    </form>
+  </div>
+
+  <div class="column vis-col">
+    <div class="col-title">
+      Visualizations
+    </div>
+  </div>
+
+  <div class="column list-col">
+    <div class="col-title">
+      Reddit Posts
+    </div>
+    <div>
+      <div class="list-item">
+        <div>Reddit Post Title</div>
+        <div>Body</div>
+      </div>
+      <div class="list-item">
+        Reddit Post Title
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+  // initial creation of the ...
+  //init();
+
+  // fetch enables GET and POST requests to the server (run using server.py)
+  let url = new URL("http://localhost:8000/get-data");
+  let reqStateUrl = new URL("http://localhost:8000/get-state");
+
+  reqStateUrl.search = new URLSearchParams({}).toString();
+  fetch(reqStateUrl,{"credentials": "same-origin"})
+  .then(response => response.json())
+  .then(obj => {
+    console.log(obj);
+    let reqState = obj
+    url.search = new URLSearchParams({"reqState": reqState}).toString();
+    fetch(url,{"credentials": "same-origin"})
+    .then(response => response.json())
+    .then(obj => {
+      let data = obj['data']
+      console.log("data: ", data)
+      //createDateRangeSlider(mn, mx);
+      //renderLineChart(data);
+    });
+  });
+</script>
+</body>
