@@ -6,48 +6,113 @@
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script src="https://unpkg.com/d3-simple-slider"></script>
-
+<link type="text/css" rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
-<body>
-<div class="top-bar">
-  <h3>CMSC828D: Reddit Police Brutality Activity Dashboard</h3>
-</div>
-
-<div class="row">
-  <div class="column query-col">
-    <div class="col-title">
-      Query Filters
-    </div>
-    <form>
-      <input type="text" id="fname" name="fname">
-    </form>
+<body  class="bg-light">
+  <div class="container-fluid px-4 h-100">
+  <div class="mb-4 mt-4">
+    <h3>CMSC828D: Reddit Police Brutality Activity Dashboard</h3>
   </div>
 
-  <div class="column vis-col">
-    <div class="col-title">
-      Visualizations
-    </div>
-  </div>
-
-  <div class="column list-col">
-    <div class="col-title">
-      Reddit Posts
-    </div>
-    <div>
-      <div class="list-item">
-        <div>Reddit Post Title</div>
-        <div>Body</div>
-      </div>
-      <div class="list-item">
-        Reddit Post Title
+  <div class="row">
+    <div class="col-2 container-fluid h-100">
+      <div class="mb-2 p-2 pb-4 rounded shadow-1-strong bg-white list-item" id="query-box">        
+        <div class="col-title">
+          Query Filters
+        </div>
+        <form>
+          <input type="text" id="fname" name="fname">
+          <input type="text" id="fname" name="fname">
+          <input type="text" id="fname" name="fname">
+          <input type="text" id="fname" name="fname">
+        </form>
       </div>
     </div>
+
+    <div class="col-10 container-fluid">
+      <div class="mb-4 container-fluid">
+        <div class="row">
+          <div class="col-3 p-0 pr-2 container-fluid h-100">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+              Stat1
+            </div>
+          </div>
+          <div class="col-3 p-0 pr-2 container-fluid h-100">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+              Stat2
+            </div>
+          </div>
+          <div class="col-3 p-0 pr-2 container-fluid h-100">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+              Stat3
+            </div>
+          </div>
+          <div class="col-3 p-0 container-fluid h-100">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+              Stat4
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+      <div class="row">
+        <div class="col-6 container-fluid">
+          <div class="col-title">
+            Reddit Posts
+          </div>
+          <div class="overflow-auto" style="max-height: 750px;">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 1</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 2</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 3</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 4</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 5</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 6</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+              <div class="mb-1">Reddit Post 7 last</div>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
+            </div>
+          </div>
+        
+        </div>
+
+        <div class="col-6 container-fluid">
+          <div class="col-title">
+            Visualizations
+          </div>
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+            Vis 1
+          </div>
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
+            Vis 2
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
 <script>
   
   // initial creation of the ...
