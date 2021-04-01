@@ -35,7 +35,7 @@ def getData():
     return
 
   try:
-    conn = psycopg2.connect("dbname='a3database' user='cmsc828d'")
+    conn = psycopg2.connect("dbname='pbdatabase' user='cmsc828d'")
   except:
     print("Unable to connect to the database!")
     return

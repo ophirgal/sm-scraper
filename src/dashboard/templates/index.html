@@ -25,11 +25,9 @@
           Query Filters
         </div>
         <form>
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
+          <input type="text" id="search" name="search" placeholder="Keyword Search">
         </form>
+        <div id="date-range-slider">Date range slider</div>
       </div>
     </div>
 
@@ -65,35 +63,8 @@
           <div class="col-title">
             Reddit Posts
           </div>
-          <div class="overflow-auto" style="max-height: 750px;">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 1</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 2</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 3</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 4</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 5</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 6</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 7 last</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
+          <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 750px;">
+            
           </div>
         
         </div>
@@ -114,7 +85,48 @@
   </div>
 </div>
 <script>
+  var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
+  var postList = [];
   
+  // Render all visualizations (the function needs to have global scope)
+  function renderAll(
+    scatterplot = true,
+    postlist = true,
+    filters = {}
+  ) {
+    console.log("Rendering all");
+    //if (scatterplot) render_scatterplot(filters)
+    if (postlist) renderPostList()
+  }
+
+  window.addEventListener('load', renderAll)
+  window.addEventListener('resize', renderAll)
+
+  function renderPostList() {
+    if (postList.length == 0) { // for testing without data!
+      postList = [{'title': 'Post 1', 'body': sampleText},{'title': 'Post 2', 'body': sampleText},{'title': 'Post 3', 'body': sampleText}];
+    }
+    var listNode = document.getElementById("postlist");
+    // build list item and append for each post
+    postList.forEach(post => {
+      var node = document.createElement("div"); 
+      node.classList.add("mb-2", "p-2", "rounded", "shadow-1-strong", "bg-white");
+
+      var titleNode = document.createElement("div");
+      titleNode.classList.add("mb-1");
+      var textNode = document.createTextNode(post.title);
+      titleNode.appendChild(textNode);  
+      node.appendChild(titleNode);
+
+      var titleNode = document.createElement("div");
+      var textNode = document.createTextNode(post.body);
+      titleNode.appendChild(textNode);  
+      node.appendChild(titleNode);
+
+      listNode.appendChild(node);
+    });
+  }
+
   // initial creation of the ...
   //init();
 
