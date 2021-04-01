@@ -5,6 +5,7 @@
 FROM ubuntu:16.04
 
 COPY requirements.txt .
+COPY sql_setup.sql .
 
 # Add the PostgreSQL PGP key to verify their Debian packages.
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -57,13 +58,6 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.3/main/pg_hba.c
 RUN /etc/init.d/postgresql start \
     && psql --command "CREATE USER cmsc828d WITH SUPERUSER PASSWORD 'pword';" \
     && createdb -w -O cmsc828d smsdatabase
-
-RUN /usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main \
--c config_file=/etc/postgresql/9.3/main/postgresql.conf &
-
-# Set up the database using a .sql file
-# RUN service postgresql restart \
-#     && psql -U cmsc828d -d smsdatabase -f sql_setup.sql
 
 # By default, listen on port 5000
 EXPOSE 5000/tcp
