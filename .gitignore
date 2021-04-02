@@ -1,3 +1,13 @@
+# personal dev folders
+env/
+notebooks/
+
+# miscellaneous files
+*.sublime-project
+.vscode
+.dist
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
