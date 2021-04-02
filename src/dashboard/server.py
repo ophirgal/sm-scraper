@@ -36,6 +36,7 @@ def getState():
 
 @app.route('/get-data')
 def getData():
+<<<<<<< HEAD
     global reqState
     thisState = int(request.args.get('reqState'))
     if reqState != thisState:
@@ -58,6 +59,37 @@ def getData():
 
     '''
     for s in statesList:
+=======
+  global reqState
+  thisState = int(request.args.get('reqState'))
+  if reqState != thisState:
+    print("STALE REQ: ABORTING")
+    return
+
+  try:
+    conn = psycopg2.connect("dbname='a3database' user='cmsc828d'")
+  except:
+    print("Unable to connect to the database!")
+    return
+  
+  #states = request.args.get('states')
+  #statesList = states.split(",")  
+  
+  cur = conn.cursor()
+  
+  if reqState != thisState:
+    print("STALE REQ: ABORTING")
+    return
+  
+  
+  # Get all rows for all states
+  data = []
+  dataAvg = []
+  i = 0
+
+  '''
+  for s in statesList:
+>>>>>>> parent of d6ee07d... implemented dynamic post list loading, still awaiting data
     if reqState != thisState:
       print("STALE REQ: ABORTING")
       return
