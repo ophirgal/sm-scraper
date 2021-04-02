@@ -25,7 +25,7 @@
           Query Filters
         </div>
         <form>
-          <input type="text" id="search" name="search" placeholder="Keyword Search">
+          <input class="input-width" type="text" id="search" name="search" placeholder="Keyword Search">
         </form>
         <div id="date-range-slider">Date range slider</div>
       </div>
@@ -40,17 +40,17 @@
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat2">
               Stat2
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat3">
               Stat3
             </div>
           </div>
           <div class="col-3 p-0 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat4">
               Stat4
             </div>
           </div>
@@ -87,6 +87,11 @@
 <script>
   var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
   var postList = [];
+
+  // on input change, requery data and reload viz
+  function updateData() {
+    // request here?
+  }
   
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
@@ -107,6 +112,10 @@
       postList = [{'title': 'Post 1', 'body': sampleText},{'title': 'Post 2', 'body': sampleText},{'title': 'Post 3', 'body': sampleText}];
     }
     var listNode = document.getElementById("postlist");
+    // clears existing list items
+    while (listNode.firstChild) {
+      listNode.removeChild(listNode.firstChild);
+    }
     // build list item and append for each post
     postList.forEach(post => {
       var node = document.createElement("div"); 
@@ -146,8 +155,7 @@
     .then(obj => {
       let data = obj['data']
       console.log("data: ", data)
-      //createDateRangeSlider(mn, mx);
-      //renderLineChart(data);
+      renderAll();
     });
   });
 </script>
