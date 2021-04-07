@@ -138,6 +138,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# MacOS
+**/.DS_Store
 
 # shu put here
 temp/
