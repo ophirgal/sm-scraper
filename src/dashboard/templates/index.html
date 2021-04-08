@@ -12,6 +12,7 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')
 }}">
 <script src="{{ url_for('static', filename='js/times-vis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/words-vis.js') }}"></script>
 </head>
 
 <body  class="bg-light">
@@ -68,16 +69,15 @@
           <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 65vh;">
             
           </div>
-        
         </div>
 
         <div class="col-6 container-fluid">
           <div class="col-title">
             Visualizations
           </div>
-          <div class="mb-3 p-2 rounded shadow-1-strong bg-white h-50" id="times-vis">   
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="times-vis" style="height: 43%">   
           </div>
-          <div class="mb-3 p-2 rounded shadow-1-strong bg-white h-50" id="words-vis">
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="words-vis" style="height: 43%">
           </div>
         </div>
       </div>
@@ -96,11 +96,13 @@
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
     times_vis = true,
+    words_vis = true,
     postlist = true,
     filters = {}
   ) {
     console.log("Rendering all");
     if (times_vis) render_times_vis(filters)
+    if (words_vis) render_words_vis(filters)
     if (postlist) renderPostList()
   }
 

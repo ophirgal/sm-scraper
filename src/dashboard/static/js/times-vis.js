@@ -3,7 +3,7 @@
  */
 async function render_times_vis(filters = {}) {
     // set the dimensions and margins of the graph
-    let margin = { top: 20, right: 35, bottom: 45, left: 30 }
+    let margin = { top: 35, right: 35, bottom: 30, left: 30 }
     let width = document.querySelector('#times-vis').offsetWidth
         - margin.left - margin.right
     let height = document.querySelector('#times-vis').offsetHeight
@@ -93,7 +93,7 @@ async function render_times_vis(filters = {}) {
 
     svg.append("g")
         .call(d3.axisLeft(y)
-            .ticks(3)
+            .ticks(5)
             .tickFormat((d, i) => String(d).length > 3 ? d3.format("~s")(d) : d)
         )
 
@@ -115,6 +115,15 @@ async function render_times_vis(filters = {}) {
         .attr("width", d => Math.max(x(d.binMax) - x(d.binMin) - 1, 0))
         .attr("height", d => Math.max(height - y(d.count), 0))
         .style("fill", "#4282c2")
+
+    // Add Vis Title
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px")
+        .style("font-style", "italic")
+        .text("Distribution of Selected Posts by Date");
 
     //////////////////////        BRUSH CODE      ///////////////////////////
     /* // define brush
