@@ -1,0 +1,7 @@
+
+
+!.cache/
+!.config/
+!.jupyter/
+!.sensitive/
+!.bashrc

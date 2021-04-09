@@ -25,15 +25,9 @@
           Query Filters
         </div>
         <form>
-<<<<<<< HEAD
-          <input class="input-width" type="text" id="search" name="search" placeholder="Keyword Search">
-=======
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
-          <input type="text" id="fname" name="fname">
->>>>>>> parent of d6ee07d... implemented dynamic post list loading, still awaiting data
+          <input type="text" id="search" name="search" placeholder="Keyword Search">
         </form>
+        <div id="date-range-slider">Date range slider</div>
       </div>
     </div>
 
@@ -46,17 +40,17 @@
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat2">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
               Stat2
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat3">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
               Stat3
             </div>
           </div>
           <div class="col-3 p-0 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat4">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
               Stat4
             </div>
           </div>
@@ -69,35 +63,8 @@
           <div class="col-title">
             Reddit Posts
           </div>
-          <div class="overflow-auto" style="max-height: 750px;">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 1</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 2</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 3</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 4</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 5</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 6</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-              <div class="mb-1">Reddit Post 7 last</div>
-              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.</div>
-            </div>
+          <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 750px;">
+            
           </div>
         
         </div>
@@ -118,14 +85,8 @@
   </div>
 </div>
 <script>
-<<<<<<< HEAD
   var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
   var postList = [];
-
-  // on input change, requery data and reload viz
-  function updateData() {
-    // request here?
-  }
   
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
@@ -146,10 +107,6 @@
       postList = [{'title': 'Post 1', 'body': sampleText},{'title': 'Post 2', 'body': sampleText},{'title': 'Post 3', 'body': sampleText}];
     }
     var listNode = document.getElementById("postlist");
-    // clears existing list items
-    while (listNode.firstChild) {
-      listNode.removeChild(listNode.firstChild);
-    }
     // build list item and append for each post
     postList.forEach(post => {
       var node = document.createElement("div"); 
@@ -170,9 +127,6 @@
     });
   }
 
-=======
-  
->>>>>>> parent of d6ee07d... implemented dynamic post list loading, still awaiting data
   // initial creation of the ...
   //init();
 
@@ -192,7 +146,8 @@
     .then(obj => {
       let data = obj['data']
       console.log("data: ", data)
-      renderAll();
+      //createDateRangeSlider(mn, mx);
+      //renderLineChart(data);
     });
   });
 </script>

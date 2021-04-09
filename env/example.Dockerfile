@@ -4,9 +4,6 @@
 
 FROM ubuntu:16.04
 
-COPY requirements.txt .
-COPY sql_setup.sql .
-
 # Add the PostgreSQL PGP key to verify their Debian packages.
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
 # Add PostgreSQL's repository. It contains the most recent stable release
@@ -31,14 +28,24 @@ RUN apt-key adv \
     && apt-get update && apt-get install -y \
         python3.8 \
         python3-pip \
-    && python3 -m pip install -r requirements.txt
-
+    && pip3 install \
+        flask \
+        psycopg2
 
 # Note: The official Debian and Ubuntu images automatically ``apt-get clean``
 # after each ``apt-get``
 
 # Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
 USER postgres
+
+# Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
+# then create a database `docker` owned by the ``docker`` role.
+# Note: here we use ``&&\`` to run commands one after the other - the ``\``
+#       allows the RUN command to span multiple lines.
+RUN /etc/init.d/postgresql start \
+    && psql --command "CREATE USER cmsc828d WITH SUPERUSER PASSWORD 'pword';" \
+    && createdb -w -O cmsc828d a2database \
+    && service postgresql stop
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
@@ -50,22 +57,19 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.3/main/pg_hba.c
     && sed -i -e 's/peer/trust/g' /etc/postgresql/9.3/main/pg_hba.conf \
     && echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
+COPY ./data/example/anime.tsv ./data/example/anime.sql /data/
+RUN service postgresql restart \
+    && psql -Ucmsc828d -d a2database -f /data/anime.sql \
+    && service postgresql stop
 
-# Create a PostgreSQL role and
-# then create a database owned by the role.
-# Note: here we use ``&&\`` to run commands one after the other - the ``\``
-#       allows the RUN command to span multiple lines.
-RUN /etc/init.d/postgresql start \
-    && psql --command "CREATE USER cmsc828d WITH SUPERUSER PASSWORD 'pword';" \
-    && createdb -w -O cmsc828d smsdatabase
 
-# By default, listen on port 5000
-EXPOSE 5000/tcp
+# Expose the PostgreSQL port
+EXPOSE 5432
 
-# add /src folder and as working directory
-COPY src /src
-WORKDIR /src
+
+# Add VOLUMEs to allow backup of config, logs and databases
+# VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
-CMD ["/bin/bash", "start.sh"]
+CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
 
