@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')
 }}">
+<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+<script src="{{ url_for('static', filename='js/keyword-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/post-list.js') }}"></script>
 <script src="{{ url_for('static', filename='js/times-vis.js') }}"></script>
 <script src="{{ url_for('static', filename='js/words-vis.js') }}"></script>
 </head>
@@ -27,9 +30,8 @@
         <div class="col-title">
           Query Filters
         </div>
-        <form>
-          <input class="input-width" type="text" id="search" name="search" placeholder="Keyword Search">
-        </form>
+        <input class="mb-1 input-width" type="text" id="keyword-input" name="keyword-input" placeholder="Keyword Input">
+        <div id="keyword-pill-list"></div>
         <div id="date-range-slider">Date range slider</div>
       </div>
     </div>
@@ -85,13 +87,8 @@
   </div>
 </div>
 <script>
-  var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
   var postList = [];
-
-  // on input change, requery data and reload viz
-  function updateData() {
-    // request here?
-  }
+  var keywords = [];
   
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
@@ -109,56 +106,11 @@
   window.addEventListener('load', renderAll)
   window.addEventListener('resize', renderAll)
 
-  function renderPostList() {
-    if (postList.length == 0) { // for testing without data!
-      postList = [{'title': 'Post 1', 'body': sampleText},{'title': 'Post 2', 'body': sampleText},{'title': 'Post 3', 'body': sampleText}];
-    }
-    var listNode = document.getElementById("postlist");
-    // clears existing list items
-    while (listNode.firstChild) {
-      listNode.removeChild(listNode.firstChild);
-    }
-    // build list item and append for each post
-    postList.forEach(post => {
-      var node = document.createElement("div"); 
-      node.classList.add("mb-2", "p-2", "rounded", "shadow-1-strong", "bg-white");
-
-      var titleNode = document.createElement("div");
-      titleNode.classList.add("mb-1");
-      var textNode = document.createTextNode(post.title);
-      titleNode.appendChild(textNode);  
-      node.appendChild(titleNode);
-
-      var titleNode = document.createElement("div");
-      var textNode = document.createTextNode(post.body);
-      titleNode.appendChild(textNode);  
-      node.appendChild(titleNode);
-
-      listNode.appendChild(node);
-    });
-  }
-
-  // initial creation of the ...
-  //init();
-
-  // fetch enables GET and POST requests to the server (run using server.py)
-  let url = new URL("http://localhost:5000/get-data");
-  let reqStateUrl = new URL("http://localhost:5000/get-state");
-
-  reqStateUrl.search = new URLSearchParams({}).toString();
-  fetch(reqStateUrl,{"credentials": "same-origin"})
-  .then(response => response.json())
-  .then(obj => {
-    console.log(obj);
-    let reqState = obj
-    url.search = new URLSearchParams({"reqState": reqState}).toString();
-    fetch(url,{"credentials": "same-origin"})
-    .then(response => response.json())
-    .then(obj => {
-      let data = obj['data']
-      console.log("data: ", data)
-      renderAll();
-    });
+  // add keyword pills
+  document.getElementById("keyword-input").addEventListener("keydown", function (e) {
+      if (e.keyCode === 13) {
+          addKeywords(e);
+      }
   });
 </script>
 </body>

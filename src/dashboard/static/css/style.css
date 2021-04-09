@@ -33,6 +33,12 @@ body {
 .inline {
     display: inline;
 }
+
+.pill {
+    display: inline-block;
+    width: fit-content;
+    margin-right: 3px;
+}
 /*.row {
     margin: 0;
 }
