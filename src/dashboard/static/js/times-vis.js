@@ -8,7 +8,7 @@ async function render_times_vis(filters = {}) {
         - margin.left - margin.right
     let height = document.querySelector('#times-vis').offsetHeight
         - margin.top - margin.bottom
-
+    
     // remove existing svg (if any)
     d3.selectAll("#times-vis > svg").remove()
 
