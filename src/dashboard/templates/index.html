@@ -3,13 +3,19 @@
 
 <head>
 <title>Reddit Police Brutality Dashboard</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script src="https://unpkg.com/d3-simple-slider"></script>
 <link type="text/css" rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')
+}}">
+<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+<script src="{{ url_for('static', filename='js/keyword-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/post-list.js') }}"></script>
+<script src="{{ url_for('static', filename='js/times-vis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/words-vis.js') }}"></script>
 </head>
 
 <body  class="bg-light">
@@ -24,9 +30,8 @@
         <div class="col-title">
           Query Filters
         </div>
-        <form>
-          <input type="text" id="search" name="search" placeholder="Keyword Search">
-        </form>
+        <input class="mb-1 input-width" type="text" id="keyword-input" name="keyword-input" placeholder="Keyword Input">
+        <div id="keyword-pill-list"></div>
         <div id="date-range-slider">Date range slider</div>
       </div>
     </div>
@@ -40,17 +45,17 @@
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat2">
               Stat2
             </div>
           </div>
           <div class="col-3 p-0 pr-2 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat3">
               Stat3
             </div>
           </div>
           <div class="col-3 p-0 container-fluid h-100">
-            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
+            <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat4">
               Stat4
             </div>
           </div>
@@ -59,25 +64,22 @@
         
       </div>
       <div class="row">
-        <div class="col-6 container-fluid">
+        <div class="col-6 container-fluid" style="max-height: 65vh;">
           <div class="col-title">
             Reddit Posts
           </div>
-          <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 750px;">
+          <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 65vh;">
             
           </div>
-        
         </div>
 
         <div class="col-6 container-fluid">
           <div class="col-title">
             Visualizations
           </div>
-          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-            Vis 1
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="times-vis" style="height: 43%">   
           </div>
-          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="boxplot-vis">
-            Vis 2
+          <div class="mb-3 p-2 rounded shadow-1-strong bg-white" id="words-vis" style="height: 43%">
           </div>
         </div>
       </div>
@@ -85,70 +87,34 @@
   </div>
 </div>
 <script>
-  var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
   var postList = [];
+  var keywords = [];
   
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
-    scatterplot = true,
+    times_vis = true,
+    words_vis = true,
     postlist = true,
     filters = {}
   ) {
     console.log("Rendering all");
-    //if (scatterplot) render_scatterplot(filters)
+    if (times_vis) render_times_vis(filters)
+    if (words_vis) render_words_vis(filters)
     if (postlist) renderPostList()
   }
 
   window.addEventListener('load', renderAll)
   window.addEventListener('resize', renderAll)
 
-  function renderPostList() {
-    if (postList.length == 0) { // for testing without data!
-      postList = [{'title': 'Post 1', 'body': sampleText},{'title': 'Post 2', 'body': sampleText},{'title': 'Post 3', 'body': sampleText}];
-    }
-    var listNode = document.getElementById("postlist");
-    // build list item and append for each post
-    postList.forEach(post => {
-      var node = document.createElement("div"); 
-      node.classList.add("mb-2", "p-2", "rounded", "shadow-1-strong", "bg-white");
-
-      var titleNode = document.createElement("div");
-      titleNode.classList.add("mb-1");
-      var textNode = document.createTextNode(post.title);
-      titleNode.appendChild(textNode);  
-      node.appendChild(titleNode);
-
-      var titleNode = document.createElement("div");
-      var textNode = document.createTextNode(post.body);
-      titleNode.appendChild(textNode);  
-      node.appendChild(titleNode);
-
-      listNode.appendChild(node);
-    });
-  }
-
-  // initial creation of the ...
-  //init();
-
-  // fetch enables GET and POST requests to the server (run using server.py)
-  let url = new URL("http://localhost:8000/get-data");
-  let reqStateUrl = new URL("http://localhost:8000/get-state");
-
-  reqStateUrl.search = new URLSearchParams({}).toString();
-  fetch(reqStateUrl,{"credentials": "same-origin"})
-  .then(response => response.json())
-  .then(obj => {
-    console.log(obj);
-    let reqState = obj
-    url.search = new URLSearchParams({"reqState": reqState}).toString();
-    fetch(url,{"credentials": "same-origin"})
-    .then(response => response.json())
-    .then(obj => {
-      let data = obj['data']
-      console.log("data: ", data)
-      //createDateRangeSlider(mn, mx);
-      //renderLineChart(data);
-    });
+  // add keyword pills
+  document.getElementById("keyword-input").addEventListener("keydown", function (e) {
+      if (e.keyCode === 13) {
+          addKeywords(e);
+      }
   });
+
+  // initial renderAll
+  renderAll();
+  
 </script>
 </body>
