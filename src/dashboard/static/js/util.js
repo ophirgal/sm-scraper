@@ -6,6 +6,7 @@ function clearNode(node) {
     }
 }
 
+// removes duplicates from array of strings
 Array.prototype.unique = function() {
     var a = this.concat();
     for(var i=0; i<a.length; ++i) {
@@ -15,4 +16,16 @@ Array.prototype.unique = function() {
         }
     }
     return a;
+};
+
+// removes spaces or empty string from array of strings
+Array.prototype.noSpace = function() {
+    var a = this.concat();
+    var n = [];
+    for(var i=0; i<a.length; ++i) {
+        if (a[i] != " " && a[i] != "") {
+            n.push(a[i]);
+        }
+    }
+    return n;
 };
