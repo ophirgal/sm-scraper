@@ -12,7 +12,11 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')
 }}">
 <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+<script src="{{ url_for('static', filename='js/filter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/date-range-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/keyword-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jurisdiction-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/source-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/pills.js') }}"></script>
 <script src="{{ url_for('static', filename='js/post-list.js') }}"></script>
 <script src="{{ url_for('static', filename='js/times-vis.js') }}"></script>
@@ -27,13 +31,34 @@
 
   <div class="row">
     <div class="col-2 container-fluid h-100">
+      <div class="col-title">
+        Query Filters
+      </div>
       <div class="mb-2 p-2 pb-4 rounded shadow-1-strong bg-white list-item" id="query-box">        
-        <div class="col-title">
-          Query Filters
+        
+        <div class="mb-4">
+          <div id="date-range-slider">Date range</div>
+          <div>
+            <button id="1D-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('1D')">1D</button>
+            <button id="1W-button" type="button" class="btn btn-sm btn-primary" onclick="dateRangeSelect('1W')">1W</button>
+            <button id="1M-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('1M')">1M</button>
+            <button id="3M-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('3M')">3M</button>
+            <button id="1Y-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('1Y')">1Y</button>
+            <button id="All-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('All')">All</button>
+          </div>
         </div>
-        <input class="mb-1 input-width" type="text" id="keyword-input" name="keyword-input" placeholder="Keyword Input">
-        <div id="keyword-pill-list"></div>
-        <div id="date-range-slider">Date range slider</div>
+        <div class="mb-3">
+          <input class="mb-1 input-width" type="text" id="keyword-input" name="keyword-input" placeholder="Keyword Input">
+          <div id="keyword-pill-list"></div>
+        </div>
+        <div class="mb-3">
+          <input class="mb-1 input-width" type="text" id="jurisdiction-input" name="jurisdiction-input" placeholder="Jurisdiction Input">
+          <div id="jurisdiction-pill-list"></div>
+        </div>
+        <div class="mb-3">
+          <input class="mb-1 input-width" type="text" id="source-input" name="source-input" placeholder="Source Input (Subreddits)">
+          <div id="source-pill-list"></div>
+        </div>
       </div>
     </div>
 
@@ -89,8 +114,12 @@
 </div>
 <script>
   var postList = [];
+  var dateRangeSetting = "";
+  var dateRange = {'min': Date.now(), 'max': Date.now()};
   var keywords = [];
-  
+  var jurisdictions = [];
+  var sources = [];
+
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
     times_vis = true,
@@ -104,17 +133,37 @@
     if (postlist) renderPostList()
   }
 
+  // event listeners
   window.addEventListener('load', renderAll)
   window.addEventListener('resize', renderAll)
-
-  // add keyword pills
   document.getElementById("keyword-input").addEventListener("keydown", function (e) {
       if (e.keyCode === 13) {
           addKeywords(e);
       }
   });
+  document.getElementById("jurisdiction-input").addEventListener("keydown", function (e) {
+      if (e.keyCode === 13) {
+          addJurisdictions(e);
+      }
+  });
+  document.getElementById("source-input").addEventListener("keydown", function (e) {
+      if (e.keyCode === 13) {
+          addSources(e);
+      }
+  });
 
-  // initial renderAll
+  function init() {
+    // presupply default filter settings
+    dateRangeSetting = "1W";
+    updateDateRangeButtons();
+    jurisdictions.push("Washington, DC", "Baltimore, MD", "Louisville, KY");
+    sources.push("police", "policebrutality");
+    updateAllPills();
+  }
+
+
+  // initialize and renderAll
+  init();
   renderAll();
   
 </script>
