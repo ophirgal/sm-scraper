@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np 
 import time
 import datetime
+import psycopg2
 
 reddit = praw.Reddit(
     client_id='GrsVdaeNmOR9OQ', 
@@ -29,54 +30,53 @@ class Scraper:
             username=username,
         )
     
+    def getConnection(self, databaseName='smsdatabase'):
+        connection = psycopg2.connect(user="cmsc828d",
+                                        password="cmsc828d",
+                                        host="127.0.0.1",
+                                        port="5432",
+                                        database=databaseName)
+        return connection
+    
     def scrape(self, freq=1, limit=10, subreddits=['police', 'SocialJusticeInAction', 'Bad_Cop_No_Donut', 'BLM']):
-        if not os.path.isdir('./subreddit_post'):
-            os.mkdir('./subreddit_post')
-        subreddit_dirs = os.listdir('./subreddit_posts')
-        for subreddit in subreddits:
-            if subreddit not in subreddit_dirs:
-                os.mkdir('./subreddit_posts/' + subreddit)
+        connection  = self.getConnection()
+        cursor = connection.cursor()
+        SQL_Query = ''' CREATE TABLE IF NOT EXISTS scraped_data(
+        "id"  Text PRIMARY KEY,
+	    "relevance_score"  TEXT,
+        "platform" TEXT,
+        "subplatform" TEXT,
+        "time_posted" TEXT,
+        "time_scraped" TEXT,
+        "title_raw"  TEXT,
+        "title_lemmatized" TEXT,
+        "body_raw" TEXT,
+        "body_lemmatized" TEXT,
+        "author" TEXT,
+        "post_url" TEXT,
+        "comment_count" Int
+        )'''
+        cursor.execute(SQL_Query)
+        connection.commit()
+
         while True:
             for subreddit in subreddits:
                 hotPosts = reddit.subreddit(subreddit).hot(limit=limit)
                 for i, post in enumerate(hotPosts):
-                    self.write_post(i, subreddit, post)
+                    self.write_post_to_db(i, subreddit, post)
             time.sleep(freq * 60)
 
-    def write_post(self, hot_rank, subreddit, post):
-        post_dirs = os.listdir('./subreddit_posts/' + subreddit)
-        if post.id not in post_dirs:
-            os.mkdir('./subreddit_posts/' + subreddit + "/" + post.id)
-            os.mkdir('./subreddit_posts/' + subreddit + "/" + post.id + "/comments")
-            file = open('./subreddit_posts/' + subreddit + "/" + post.id + "/post", "w+")
-            file.write("Title: " + post.title + "\n\n")
-            file.write("Time created: " + str(post.created) + "\n\n")
-            file.write("Author: " + str(post.author)+ ", ID: " + str(post.author.id) + "\n\n")
-            file.write("URL: " + post.url + "\n\n")
-            file.write("Text contents: \n" + post.selftext + "\n\n")
-            file.write(str(datetime.datetime.now()) + " hotest " + str(hot_rank) + "\n")
-        else:
-            file = open('./subreddit_posts/' + subreddit + "/" + post.id + "/post", "a")
-            file.write(str(datetime.datetime.now()) + " hotest " + str(hot_rank) + "\n")
+    def write_post_to_db(self, hot_rank, subreddit, post):
+        connection  = self.getConnection()
+        cursor = connection.cursor()
 
-        post.comments.replace_more(limit=0)
-        for comment in post.comments.list():
-            comment_files = os.listdir('./subreddit_posts/' + subreddit + "/" + post.id + "/comments")
-            if comment.id not in comment_files:
-                file = open('./subreddit_posts/' + subreddit + "/" + post.id + "/comments/" + comment.id, "w+")
-                file.write("Time created: " + str(comment.created) + "\n\n")
-                if comment.author is not None:
-                    file.write("Author: " + str(comment.author) + "\n\n")
-                    # file.write("Author: " + str(comment.author))
-                    # if comment.author.id is not None:
-                    #     file.write(", ID: " + str(comment.author.id) + "\n\n")
-                    # else:
-                    #     print("no ID")
-                    #     file.write(", ID: no ID\n\n")
-                else:
-                    file.write("Author: no author\n\n")
-                file.write("Text contents: \n" + comment.body + "\n\n")
-        
+        row = [post.id,'1','reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
+        ,post.title,post.selftext,post.selftext,post.author.id,post.url,len(post.comments.list())]
+        cursor.execute(
+                '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s,%s,%s) ON Conflict(id) DO \
+                   UPDATE SET "time_scraped" = EXCLUDED.time_scraped, "comment_count" = EXCLUDED.comment_count ''',
+                row)
+        connection.commit()
 
 
 
