@@ -30,9 +30,9 @@ class Scraper:
             username=username,
         )
     
-    def getConnection(self, databaseName='smsdatabase'):
+    def getConnection(self, databaseName='smscraper'):
         connection = psycopg2.connect(user="cmsc828d",
-                                        password="cmsc828d",
+                                        password="pword",
                                         host="127.0.0.1",
                                         port="5432",
                                         database=databaseName)
@@ -77,6 +77,9 @@ class Scraper:
                    UPDATE SET "time_scraped" = EXCLUDED.time_scraped, "comment_count" = EXCLUDED.comment_count ''',
                 row)
         connection.commit()
+	
+scrapeObj = Scraper()
+scrapeObj.scrape()
 
 
 
