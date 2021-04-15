@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
         requests
 
 
-CMD python3 --version
+CMD python3 -m src.scraper.scraper
 
 ## instructions:
 # change dependencies above if needed
