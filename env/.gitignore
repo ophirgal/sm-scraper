@@ -1,0 +1,10 @@
+
+
+*.sif
+*.deb
+*.tar
+*.tar.xz
+*.tar.gz
+*.zip
+
+machine_config.bashrc
