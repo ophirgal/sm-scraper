@@ -1,10 +1,13 @@
 body {
     margin: 0;
-    font-family:Arial, Helvetica, sans-serif;
 }
 
 .bg-orange {
     background-color: rgb(255, 81, 0);
+}
+
+.rounded {
+    border-radius: .15em !important;
 }
 
 .top-bar {

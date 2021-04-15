@@ -21,6 +21,10 @@
 <script src="{{ url_for('static', filename='js/post-list.js') }}"></script>
 <script src="{{ url_for('static', filename='js/times-vis.js') }}"></script>
 <script src="{{ url_for('static', filename='js/words-vis.js') }}"></script>
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </head>
 
 <body  class="bg-light">
@@ -65,17 +69,17 @@
     <div class="col-10 container-fluid">
       <div class="mb-4 container-fluid">
         <div class="row">
-          <div class="col-3 p-0 pr-2 container-fluid h-100">
+          <div class="col-3 p-0 pr-4 container-fluid h-100">
             <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat1">
               Stat1
             </div>
           </div>
-          <div class="col-3 p-0 pr-2 container-fluid h-100">
+          <div class="col-3 p-0 pr-4 container-fluid h-100">
             <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat2">
               Stat2
             </div>
           </div>
-          <div class="col-3 p-0 pr-2 container-fluid h-100">
+          <div class="col-3 p-0 pr-4 container-fluid h-100">
             <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat3">
               Stat3
             </div>
@@ -122,12 +126,14 @@
 
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
+    stats = true,
     times_vis = true,
     words_vis = true,
     postlist = true,
     filters = {}
   ) {
     console.log("Rendering all");
+    if (stats) render_stats(filters)
     if (times_vis) render_times_vis(filters)
     if (words_vis) render_words_vis(filters)
     if (postlist) renderPostList()

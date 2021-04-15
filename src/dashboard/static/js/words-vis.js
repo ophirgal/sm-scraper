@@ -3,7 +3,7 @@
  */
 async function render_words_vis(filters = {}) {
     // set the dimensions and margins of the graph
-    let margin = { top: 30, right: 60, bottom: 0, left: 60 }
+    let margin = { top: 30, right: 60, bottom: 5, left: 60 }
     let width = document.querySelector('#words-vis').offsetWidth
         - margin.left - margin.right
     let height = document.querySelector('#words-vis').offsetHeight
@@ -107,5 +107,6 @@ async function render_words_vis(filters = {}) {
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .style("font-style", "italic")
+        .style("fill", "#505050")
         .text("Distribution of Words in Selected Posts")
 }

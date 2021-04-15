@@ -3,7 +3,7 @@
  */
 async function render_times_vis(filters = {}) {
     // set the dimensions and margins of the graph
-    let margin = { top: 35, right: 35, bottom: 30, left: 30 }
+    let margin = { top: 35, right: 35, bottom: 20, left: 30 }
     let width = document.querySelector('#times-vis').offsetWidth
         - margin.left - margin.right
     let height = document.querySelector('#times-vis').offsetHeight
@@ -123,6 +123,7 @@ async function render_times_vis(filters = {}) {
         .attr("text-anchor", "middle")  
         .style("font-size", "16px")
         .style("font-style", "italic")
+        .style("fill", "#505050")
         .text("Distribution of Selected Posts by Date");
 
     //////////////////////        BRUSH CODE      ///////////////////////////
