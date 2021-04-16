@@ -11,7 +11,8 @@ RUN python3 -m pip install \
         requests \
         praw \
         pandas \
-        numpy
+        numpy \
+        requests
 
 CMD python3 -m src.scraper.scraper
 
