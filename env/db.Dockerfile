@@ -57,7 +57,7 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.3/main/pg_hba.c
     && sed -i -e 's/peer/trust/g' /etc/postgresql/9.3/main/pg_hba.conf \
     && echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
-COPY ./data/smscraper.sql ./data/smscraper.tsv /data/
+COPY ./data/smscraper/smscraper.sql ./data/smscraper/smscraper.tsv /data/
 RUN service postgresql restart \
     && psql -Ucmsc828d -d smscraper -f /data/smscraper.sql \
     && service postgresql stop

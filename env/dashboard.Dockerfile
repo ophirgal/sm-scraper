@@ -1,12 +1,9 @@
 
 
-FROM ubuntu:16.04
+FROM python:3.8
 
 # Add the PostgreSQL PGP key to verify their Debian packages.
-RUN apt-get update && apt-get install -y \
-        python3.8 \
-        python3-pip \
-    && pip3 install \
+RUN pip3 install \
         flask \
         psycopg2 \
         requests
