@@ -65,6 +65,9 @@ RUN /opt/miniconda3/bin/pip install \
     && python -m spacy download en_core_web_sm \
     && python -m spacy download en_core_web_trf
 
+RUN /opt/miniconda3/bin/conda install -c conda-forge \
+        'scikit-learn==0.24.1'
+
 # cleanup
 # RUN rm -rf /root/.cache/pip \
 #     && rm -rf /var/lib/apt/lists/* \
