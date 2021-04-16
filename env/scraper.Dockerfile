@@ -20,4 +20,3 @@ CMD python3 -m src.scraper.scraper
 # change dependencies above if needed
 # change CMD line to run your main module; see how shu did it in `nlp.Dockerfile'
 # `make scraper`
-

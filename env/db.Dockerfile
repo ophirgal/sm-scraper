@@ -78,4 +78,3 @@ CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main
 # change dependencies/setup above if needed
 # `make db`
 # `psql -h localhost -p 5432 -U cmsc828d -d smscraper` from another terminal
-
