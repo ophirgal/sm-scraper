@@ -13,5 +13,5 @@ function removeJurisdiction(s) {
 function updateJurisdictionPills() {
     var pillListNode = document.getElementById("jurisdiction-pill-list");
     clearNode(pillListNode);
-    pillListNode.appendChild(buildPillList(jurisdictions, "bg-primary"));
+    pillListNode.appendChild(buildPillList(jurisdictions, "bg-primary", removeJurisdiction));
 }

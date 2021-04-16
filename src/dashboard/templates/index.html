@@ -35,6 +35,7 @@
 
   <div class="row">
     <div class="col-2 container-fluid h-100">
+      <!-- FILTERS SECTION -->
       <div class="col-title">
         Query Filters
       </div>
@@ -42,6 +43,14 @@
         
         <div class="mb-4">
           <div id="date-range-slider">Date range</div>
+          <div class="mb-1">
+            <input class="date-picker" type="date" id="start" name="range-start"
+              value="2020-01-01" min="1900-01-01" max="2050-01-01"
+              onChange="dateRangeSelect('Custom')">
+            <input class="date-picker" type="date" id="end" name="range-end"
+              value="2021-01-01" min="1900-01-01" max="2050-01-01"
+              onChange="dateRangeSelect('Custom')">
+          </div>
           <div>
             <button id="1D-button" type="button" class="btn btn-sm btn-light" onclick="dateRangeSelect('1D')">1D</button>
             <button id="1W-button" type="button" class="btn btn-sm btn-primary" onclick="dateRangeSelect('1W')">1W</button>
@@ -65,8 +74,9 @@
         </div>
       </div>
     </div>
-
+    
     <div class="col-10 container-fluid">
+      <!-- STATS SECTION -->
       <div class="mb-4 container-fluid">
         <div class="row">
           <div class="col-3 p-0 pr-4 container-fluid h-100">
@@ -88,11 +98,10 @@
             <div class="mb-2 p-2 rounded shadow-1-strong bg-white list-item" id="stat4">
               Stat4
             </div>
-          </div>
-          
+          </div>  
         </div>
-        
       </div>
+      <!-- POSTS/VISUALIZATIONS SECTION -->
       <div class="row">
         <div class="col-6 container-fluid" style="max-height: 65vh;">
           <div class="col-title">

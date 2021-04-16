@@ -1,9 +1,9 @@
-function buildPillList(stringList, color) {
+function buildPillList(stringList, color, removeFunc) {
     var pillListNode = document.createElement("div"); 
     stringList.forEach(word => {
         var node = document.createElement("div"); 
         node.classList.add("pill", "mb-1", "p-1", "rounded", color, "text-white");
-        node.onclick = function() { removeKeyword(word); }
+        node.onclick = function() { removeFunc(word); }
 
         var textContainer = document.createElement("div"); 
         textContainer.classList.add("pr-2", "inline");

@@ -13,5 +13,5 @@ function removeKeyword(s) {
 function updateKeywordPills() {
     var pillListNode = document.getElementById("keyword-pill-list");
     clearNode(pillListNode);
-    pillListNode.appendChild(buildPillList(keywords, "bg-success"));
+    pillListNode.appendChild(buildPillList(keywords, "bg-success", removeKeyword));
 }

@@ -13,5 +13,5 @@ function removeSource(s) {
 function updateSourcePills() {
     var pillListNode = document.getElementById("source-pill-list");
     clearNode(pillListNode);
-    pillListNode.appendChild(buildPillList(sources, "bg-orange"));
+    pillListNode.appendChild(buildPillList(sources, "bg-orange", removeSource));
 }
