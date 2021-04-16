@@ -6,6 +6,8 @@ import numpy as np
 import time
 import datetime
 import psycopg2
+import requests
+import json
 
 reddit = praw.Reddit(
     client_id='GrsVdaeNmOR9OQ', 
@@ -31,13 +33,33 @@ class Scraper:
         )
     
     def getConnection(self, databaseName='smscraper'):
-        connection = psycopg2.connect(user="cmsc828d",
-                                        password="pword",
+        connection = psycopg2.connect(user="postgres",
+                                        password="cmsc828d",
                                         host="127.0.0.1",
                                         port="5432",
                                         database=databaseName)
         return connection
     
+    def getLemmatized(self,text):
+        response = requests.get(
+            url= 'http://localhost:9001/get-lemma',
+            params={
+            'text': text,
+            },
+        )
+        return response.json()
+
+    def get_relevance_score(self,text, classifier= 'has_police'):
+        response = requests.get(
+            url = 'http://localhost:9001/get-relevance',
+            params ={
+            'text': text,
+            'classifier':classifier,
+            'metadata': json.dumps({}),
+            },
+        )
+        return response.json()
+
     def scrape(self, freq=1, limit=10, subreddits=['police', 'SocialJusticeInAction', 'Bad_Cop_No_Donut', 'BLM']):
         connection  = self.getConnection()
         cursor = connection.cursor()
@@ -69,14 +91,23 @@ class Scraper:
     def write_post_to_db(self, hot_rank, subreddit, post):
         connection  = self.getConnection()
         cursor = connection.cursor()
+        relevenace_score_title = self.get_relevance_score(post.title)
+        relevenace_score_body = self.get_relevance_score(post.selftext)
+        if relevenace_score_title['relevant'] or relevenace_score_body['relevant']:
+            # Get lemmatized title and body
+            title_lemmatized =  self.getLemmatized(post.title)
+            title_lemmatized = " ".join(title_lemmatized)
+            body_lemmatized = self.getLemmatized(post.selftext)
+            body_lemmatized = " ".join(body_lemmatized)
+            relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
 
-        row = [post.id,'1','reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
-        ,post.title,post.selftext,post.selftext,post.author.id,post.url,len(post.comments.list())]
-        cursor.execute(
-                '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s,%s,%s) ON Conflict(id) DO \
-                   UPDATE SET "time_scraped" = EXCLUDED.time_scraped, "comment_count" = EXCLUDED.comment_count ''',
-                row)
-        connection.commit()
+            row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
+            ,title_lemmatized,post.selftext,body_lemmatized,post.author.id,post.url,len(post.comments.list())]
+            cursor.execute(
+                    '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s,%s,%s) ON Conflict(id) DO \
+                    UPDATE SET "time_scraped" = EXCLUDED.time_scraped, "comment_count" = EXCLUDED.comment_count ''',
+                    row)
+            connection.commit()
 	
 scrapeObj = Scraper()
 scrapeObj.scrape()

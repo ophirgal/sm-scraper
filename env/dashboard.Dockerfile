@@ -1,12 +1,8 @@
 
 FROM python:3.8
 
-WORKDIR .
-
-COPY . .
-
-RUN python3.8 -m pip install pip --upgrade
-RUN python3 -m pip install \
+# Add the PostgreSQL PGP key to verify their Debian packages.
+RUN pip3 install \
         flask \
         psycopg2 \
         requests
