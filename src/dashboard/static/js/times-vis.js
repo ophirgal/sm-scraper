@@ -76,6 +76,7 @@ async function render_times_vis(filters = {}) {
             .ticks(data.data.length))
         .selectAll(".tick")
         .attr("transform", (d, i) => `translate(${x(d) + 5 + i * 7}, 0)`)
+        .attr("font-size", "6pt")
         /* .selectAll("text")
         .each(insertLinebreaks) */
 

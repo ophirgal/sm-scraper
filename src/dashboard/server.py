@@ -11,7 +11,11 @@ app = Flask(__name__)
 reqState = 0
 
 try:
-    conn = pg.connect("dbname=smsdatabase user=postgres")
+    conn = pg.connect(user="cmsc828d",
+                      password="pword",
+                      host="127.0.0.1",
+                      port="5432",
+                      database='smscraper')
     print('Successfully connected to the database.')
 except:
     print("Unable to connect to the database!")
@@ -21,12 +25,12 @@ def main(argv):
     global reqState
 
 
-@app.route('/')
+@ app.route('/')
 def renderPage():
     return render_template("index.html")
 
 
-@app.route('/get-state')
+@ app.route('/get-state')
 def getState():
     global reqState
     reqState += 1
@@ -34,7 +38,7 @@ def getState():
     return resp
 
 
-@app.route('/get-data')
+@ app.route('/get-data')
 def getData():
     global reqState
     thisState = int(request.args.get('reqState'))
@@ -42,8 +46,8 @@ def getData():
         print("STALE REQ: ABORTING")
         return
 
-    #states = request.args.get('states')
-    #statesList = states.split(",")
+    # states = request.args.get('states')
+    # statesList = states.split(",")
 
     cur = conn.cursor()
 
@@ -64,7 +68,7 @@ def getData():
     i += 1
 
     cur.execute("SELECT \"submission_date\",\"{}\" FROM public.us_states_covid WHERE \"state\" = '{}' AND ((CAST('{}' AS date) - CAST(submission_date AS date)) % '{}') = 0 AND \"submission_date\" >= '{}' AND \"submission_date\" <= '{}' ORDER BY \"submission_date\" ASC;".format(attribute, s, mx, interval, mn, mx))
-    
+
     res = cur.fetchall()
     thisData = []
     for d in res:

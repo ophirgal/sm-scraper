@@ -13,19 +13,19 @@ function render_stats(filters) {
 
     document.querySelector('#stat1').innerHTML = `
         <div class="d-flex justify-content-center ">
-            <strong>Total posts selected:</strong>&nbsp;${Number(total_selected).toLocaleString()}
+            <strong>Posts selected:</strong>&nbsp;${Number(total_selected).toLocaleString()}
         </div>`
         document.querySelector('#stat2').innerHTML = `
         <div class="d-flex justify-content-center ">
-            <strong>Total unique users selected:</strong>&nbsp;${Number(total_unique_users).toLocaleString()}
+            <strong>Users selected:</strong>&nbsp;${Number(total_unique_users).toLocaleString()}
         </div>`
         document.querySelector('#stat3').innerHTML = `
         <div class="d-flex justify-content-center ">
-        <strong>Total posts scraped:</strong>&nbsp;${Number(total_scraped).toLocaleString()}
+        <strong>Posts scraped:</strong>&nbsp;25k
         </div>`
         document.querySelector('#stat4').innerHTML = `
         <div class="d-flex justify-content-center ">
-            <strong>Total posts relevant:</strong>&nbsp;${Number(total_relevant).toLocaleString()}
+            <strong>Posts relevant:</strong>&nbsp;2.5k
         </div>`
 }
 
