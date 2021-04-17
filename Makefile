@@ -83,7 +83,16 @@ dashboard: dashboard_docker
 		-it '${PROJECT_NAME}:dashboard'
 dashboard_docker:
 	sudo docker build -t ${PROJECT_NAME}:dashboard -f ./env/dashboard.Dockerfile ./env
-
+dashboard_windows: dashboard_docker_windows
+	docker run \
+		--rm \
+		--ipc=host \
+		--net=host \
+		-w '/workdir' \
+		-v '${PROJECT_DN}:/workdir' \
+		-it '${PROJECT_NAME}:dashboard'
+dashboard_docker_windows:
+	docker build -t ${PROJECT_NAME}:dashboard -f ./env/dashboard.Dockerfile ./env
 
 ############ NLP ############
 
@@ -131,6 +140,16 @@ nlp_example: nlp_docker
 		python3 -m src.nlp.example
 nlp_docker:
 	sudo docker build -t ${PROJECT_NAME}:nlp -f ./env/nlp.Dockerfile ./env
+nlp_windows: nlp_docker_windows
+	docker run \
+		--rm \
+		--ipc=host \
+		--net=host \
+		-w '/workdir' \
+		-v '${PROJECT_DN}:/workdir' \
+		-it '${PROJECT_NAME}:nlp'
+nlp_docker_windows:
+	docker build -t ${PROJECT_NAME}:nlp -f ./env/nlp.Dockerfile ./env
 
 
 
