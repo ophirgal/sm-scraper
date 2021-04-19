@@ -87,7 +87,7 @@ dashboard_windows: dashboard_docker_windows
 	docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		-p 5000:5000 \
 		-w '/workdir' \
 		-v '${PROJECT_DN}:/workdir' \
 		-it '${PROJECT_NAME}:dashboard'
