@@ -8,6 +8,7 @@ import datetime
 import psycopg2
 import requests
 import json
+import collections
 
 reddit = praw.Reddit(
     client_id='GrsVdaeNmOR9OQ', 
@@ -33,7 +34,7 @@ class Scraper:
         )
     
     def getConnection(self, databaseName='smscraper'):
-        connection = psycopg2.connect(user="postgres",
+        connection = psycopg2.connect(user="cmsc828d",
                                         password="cmsc828d",
                                         host="127.0.0.1",
                                         port="5432",
@@ -60,6 +61,15 @@ class Scraper:
         )
         return response.json()
 
+    def get_entities(self, text):
+        response = requests.get(
+            url='http://localhost:9001/get-entities',
+            params={
+                'text': text,
+            },
+        )
+        return response.json()
+
     def scrape(self, freq=1, limit=10, subreddits=['police', 'SocialJusticeInAction', 'Bad_Cop_No_Donut', 'BLM']):
         connection  = self.getConnection()
         cursor = connection.cursor()
@@ -81,6 +91,25 @@ class Scraper:
         cursor.execute(SQL_Query)
         connection.commit()
 
+        SQL_Query = ''' CREATE TABLE IF NOT EXISTS key_words(
+        "id"  Text,
+	    "key_word" Text,
+        "count" Integer,
+        PRIMARY KEY (id, key_word)
+        )'''
+        cursor.execute(SQL_Query)
+        connection.commit()
+
+        SQL_Query = ''' CREATE TABLE IF NOT EXISTS entities(
+        "id"  Text,
+	    "entity" Text,
+        "type" Text,
+        "count" Integer,
+        PRIMARY KEY (id, entity, type)
+        )'''
+        cursor.execute(SQL_Query)
+        connection.commit()
+
         while True:
             for subreddit in subreddits:
                 hotPosts = reddit.subreddit(subreddit).hot(limit=limit)
@@ -98,7 +127,36 @@ class Scraper:
             title_lemmatized =  self.getLemmatized(post.title)
             title_lemmatized = " ".join(title_lemmatized)
             body_lemmatized = self.getLemmatized(post.selftext)
-            body_lemmatized = " ".join(body_lemmatized)
+            key_words = collections.Counter(body_lemmatized)
+            cursor.execute(
+                    '''DELETE FROM key_words WHERE id = %s''', [str(post.id)]
+                )
+            connection.commit()
+            for key_word in key_words:
+                row = [post.id, key_word, key_words[key_word]]
+                cursor.execute(
+                    '''INSERT INTO key_words VALUES (%s, %s, %s)''', row
+                )
+                connection.commit()
+
+            entities = self.get_entities(post.selftext)
+            entities_dict = {}
+            for entity in entities:
+                if (entity[0], entity[2]) in entities_dict:
+                    entities_dict[(entity[0], entity[2])] += 1
+                else:
+                    entities_dict[(entity[0], entity[2])] = 1
+            cursor.execute(
+                    '''DELETE FROM entities WHERE id = %s''', [str(post.id)]
+                )
+            connection.commit()
+            for key, value in entities_dict.items():
+                row = [post.id, key[0], key[1], value]
+                cursor.execute(
+                    '''INSERT INTO entities VALUES (%s, %s, %s, %s)''', row
+                )
+                connection.commit()
+
             relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
 
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
