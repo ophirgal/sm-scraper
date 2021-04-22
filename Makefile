@@ -4,6 +4,12 @@ include ./env/project_config.bashrc
 include ./env/machine_config.bashrc
 
 
+############ SMSCRAPER NET #######
+add_smscraper_net:
+	sudo docker network create smscraper-net --subnet=172.28.0.0/16
+add_smscraper_net_windows:
+	docker network create smscraper-net --subnet=172.28.0.0/16
+
 ############ DATABASE ############
 
 .PHONY: db_shell db db_docker
@@ -12,7 +18,8 @@ db_shell: db_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
+		--ip 172.28.0.9 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -22,13 +29,27 @@ db: db_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
+		--ip 172.28.0.9 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
 		-it '${PROJECT_NAME}:db'
 db_docker:
 	sudo docker build -t ${PROJECT_NAME}:db -f ./env/db.Dockerfile ./env
+db_windows: db_docker_windows
+	docker run \
+		--rm \
+		--name db \
+		--net smscraper-net \
+		--ip 172.28.0.9 \
+		-w '/workdir' \
+		-w '${PROJECT_DN}' \
+		-v '/dev/shm:/dev/shm' \
+		-v '${PROJECT_DN}:${PROJECT_DN}' \
+		-it '${PROJECT_NAME}:db'
+db_docker_windows: 
+	docker build -t ${PROJECT_NAME}:db -f ./env/db.Dockerfile ./env
 
 
 ############ SCRAPER ############
@@ -39,7 +60,7 @@ scraper_shell: scraper_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -49,13 +70,23 @@ scraper: scraper_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
 		-t '${PROJECT_NAME}:scraper'
 scraper_docker:
 	sudo docker build -t ${PROJECT_NAME}:scraper -f ./env/scraper.Dockerfile ./env
+scraper_windows: scraper_docker_windows
+	docker run \
+		--rm \
+		--net smscraper-net \
+		-w '${PROJECT_DN}' \
+		-v '/dev/shm:/dev/shm' \
+		-v '${PROJECT_DN}:${PROJECT_DN}' \
+		-t '${PROJECT_NAME}:scraper'
+scraper_docker_windows:
+	docker build -t ${PROJECT_NAME}:scraper -f ./env/scraper.Dockerfile ./env
 
 
 ############ DASHBOARD ############
@@ -66,7 +97,8 @@ dashboard_shell: dashboard_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
+		-p 5000:5000 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -76,7 +108,8 @@ dashboard: dashboard_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--net smscraper-net \
+		-p 5000:5000 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -86,12 +119,13 @@ dashboard_docker:
 dashboard_windows: dashboard_docker_windows
 	docker run \
 		--rm \
-		--ipc=host \
+		--name dashboard \
+		--net smscraper-net \
 		-p 5000:5000 \
 		-w '/workdir' \
 		-v '${PROJECT_DN}:/workdir' \
 		-it '${PROJECT_NAME}:dashboard'
-dashboard_docker_windows:
+dashboard_docker_windows: 
 	docker build -t ${PROJECT_NAME}:dashboard -f ./env/dashboard.Dockerfile ./env
 
 ############ NLP ############
@@ -102,7 +136,10 @@ nlp_jupyterlab: nlp_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--name nlp \
+		--net smscraper-net \
+		-p 9001:9001 \
+		--ip 172.28.0.2 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -123,7 +160,10 @@ nlp: nlp_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--name nlp \
+		--net smscraper-net \
+		-p 9001:9001 \
+		--ip 172.28.0.2 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -132,7 +172,10 @@ nlp_example: nlp_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--name nlp \
+		--net smscraper-net \
+		-p 9001:9001 \
+		--ip 172.28.0.2 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -144,7 +187,10 @@ nlp_windows: nlp_docker_windows
 	docker run \
 		--rm \
 		--ipc=host \
-		--net=host \
+		--name nlp \
+		--net smscraper-net \
+		-p 9001:9001 \
+		--ip 172.28.0.2 \
 		-w '/workdir' \
 		-v '${PROJECT_DN}:/workdir' \
 		-it '${PROJECT_NAME}:nlp'

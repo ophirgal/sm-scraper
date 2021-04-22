@@ -1,6 +1,5 @@
 FROM python:3.8
 
-# Add the PostgreSQL PGP key to verify their Debian packages.
 RUN python3.8 -m pip install pip --upgrade
 RUN pip3 install \
         flask \

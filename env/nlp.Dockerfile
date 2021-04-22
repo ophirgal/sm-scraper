@@ -46,16 +46,16 @@ RUN apt-get install -y \
         'pyunpack==0.2.2'
 
 # jupyterlab
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get update && apt-get install -y nodejs \
-    && jupyter labextension install --no-build \
-        @jupyter-widgets/jupyterlab-manager@2.0 \
-        jupyter-threejs \
-        @jupyterlab/toc \
-        @aquirdturtle/collapsible_headings \
-        jupyterlab-plotly@4.14.3 \
-        plotlywidget@4.14.3 \
-    && jupyter lab build
+# RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+#     && apt-get update && apt-get install -y nodejs \
+#     && jupyter labextension install --no-build \
+#         @jupyter-widgets/jupyterlab-manager@2.0 \
+#         jupyter-threejs \
+#         @jupyterlab/toc \
+#         @aquirdturtle/collapsible_headings \
+#         jupyterlab-plotly@4.14.3 \
+#         plotlywidget@4.14.3 \
+#     && jupyter lab build
 
 RUN /opt/miniconda3/bin/pip install \
         'flask==1.1.2' \

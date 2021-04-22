@@ -13,11 +13,12 @@ reqState = 0
 try:
     conn = pg.connect(user="cmsc828d",
                       password="pword",
-                      host="127.0.0.1",
+                      host="172.28.0.9",
                       port="5432",
                       database='smscraper')
     print('Successfully connected to the database.')
-except:
+except Exception as e:
+    print(e)
     print("Unable to connect to the database!")
 
 

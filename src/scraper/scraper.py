@@ -33,16 +33,16 @@ class Scraper:
         )
     
     def getConnection(self, databaseName='smscraper'):
-        connection = psycopg2.connect(user="postgres",
-                                        password="cmsc828d",
-                                        host="127.0.0.1",
+        connection = psycopg2.connect(user="cmsc828d",
+                                        password="pword",
+                                        host="172.28.0.9",
                                         port="5432",
                                         database=databaseName)
         return connection
     
     def getLemmatized(self,text):
         response = requests.get(
-            url= 'http://localhost:9001/get-lemma',
+            url= 'http://172.28.0.2:9001/get-lemma',
             params={
             'text': text,
             },
@@ -51,7 +51,7 @@ class Scraper:
 
     def get_relevance_score(self,text, classifier= 'has_police'):
         response = requests.get(
-            url = 'http://localhost:9001/get-relevance',
+            url = 'http://172.28.0.2:9001/get-relevance',
             params ={
             'text': text,
             'classifier':classifier,
@@ -82,6 +82,7 @@ class Scraper:
         connection.commit()
 
         while True:
+            print('scraping')
             for subreddit in subreddits:
                 hotPosts = reddit.subreddit(subreddit).hot(limit=limit)
                 for i, post in enumerate(hotPosts):
@@ -104,8 +105,10 @@ class Scraper:
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
             ,title_lemmatized,post.selftext,body_lemmatized,post.author.id,post.url,len(post.comments.list())]
             cursor.execute(
-                    '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s,%s,%s) ON Conflict(id) DO \
-                    UPDATE SET "time_scraped" = EXCLUDED.time_scraped, "comment_count" = EXCLUDED.comment_count ''',
+                    '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s,
+                    %s, %s, %s,%s, %s,%s,%s) ON CONFLICT (id) DO \
+                    UPDATE SET time_scraped = EXCLUDED.time_scraped, \
+                    comment_count = EXCLUDED.comment_count''',
                     row)
             connection.commit()
 	
