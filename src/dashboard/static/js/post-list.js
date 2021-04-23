@@ -15,21 +15,53 @@ function renderPostList() {
           'author': "JohnSmith", 
           'post_url': "https://google.com",
           'linked_urls': "https://google.com",
-          'comment_count': "100"
+          'comment_count': "100",
+          'rating': "1200"
         },
         {
           
           'relevance_score': "2",
           'platform': "Reddit",
-          'subplatform': "PoliceBrutality",
-          'time_posted': "2021-04-02",
+          'subplatform': "Justice",
+          'time_posted': "2021-03-01",
           'time_scraped': "2021-04-03",
-          'title': 'Post 1 Title', 
+          'title': 'Post 2 Title', 
           'body': sampleText, 
           'author': "JohnSmith", 
           'post_url': "https://google.com",
           'linked_urls': "",
-          'comment_count': "5"
+          'comment_count': "5",
+          'rating': "25"
+        },
+        {
+          
+          'relevance_score': "3",
+          'platform': "Reddit",
+          'subplatform': "PoliceBrutality",
+          'time_posted': "2021-03-05",
+          'time_scraped': "2021-04-03",
+          'title': 'Post 3 Title', 
+          'body': sampleText, 
+          'author': "JohnSmith", 
+          'post_url': "https://google.com",
+          'linked_urls': "",
+          'comment_count': "500",
+          'rating': "4234"
+        },
+        {
+          
+          'relevance_score': "4",
+          'platform': "Reddit",
+          'subplatform': "Police",
+          'time_posted': "2021-04-02",
+          'time_scraped': "2021-04-03",
+          'title': 'Post 4 Title', 
+          'body': sampleText, 
+          'author': "JohnSmith", 
+          'post_url': "https://google.com",
+          'linked_urls': "",
+          'comment_count': "50",
+          'rating': "20"
         }
       ];
     }
@@ -67,6 +99,15 @@ function sortPosts(postList, sortMetric) {
         return 0;
       });
       break;
+    case "rating":
+      postList.sort((p1, p2) => {
+        var v1 = parseInt(p1.rating);
+        var v2 = parseInt(p2.rating);
+        if (v1 > v2) return -1;
+        if (v1 < v2) return 1;
+        return 0;
+      });
+      break;
     case "comments":
       postList.sort((p1, p2) => {
         var v1 = parseInt(p1.comment_count);
@@ -94,6 +135,8 @@ function buildPostCard(post) {
   var textNode = document.createTextNode(post.body);
   bodyContainer.appendChild(textNode);  
   node.appendChild(bodyContainer);
+
+  node.appendChild(buildStats(post));
 
   return node;
 }
@@ -136,6 +179,7 @@ function buildTitle(post) {
   return titleContainer;
 }
 
+
 function buildContentLink(post) { 
   var contentLinkContainer = document.createElement("div");
   if (post.linked_urls.length == 0) return contentLinkContainer; 
@@ -146,5 +190,13 @@ function buildContentLink(post) {
   a.href = post.post_url;
   contentLinkContainer.appendChild(a);  
   return contentLinkContainer;
+}
+
+function buildStats(post) { 
+  var statsContainer = document.createElement("div");
+  statsContainer.classList.add("mb-1", "font-small");
+  var textNode = document.createTextNode(post.rating + "▲ • " + post.comment_count + " comments");
+  statsContainer.appendChild(textNode);  
+  return statsContainer;
 
 }
