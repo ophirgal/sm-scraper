@@ -63,7 +63,7 @@ class Scraper:
 
     def get_entities(self, text):
         response = requests.get(
-            url='http://localhost:9001/get-entities',
+            url='http://172.28.0.2:9001/get-entities',
             params={
                 'text': text,
             },

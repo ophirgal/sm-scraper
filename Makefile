@@ -69,6 +69,7 @@ scraper_shell: scraper_docker
 scraper: scraper_docker
 	sudo docker run \
 		--rm \
+		--name scraper \
 		--ipc=host \
 		--net smscraper-net \
 		-w '${PROJECT_DN}' \
@@ -80,6 +81,7 @@ scraper_docker:
 scraper_windows: scraper_docker_windows
 	docker run \
 		--rm \
+		--name scraper \
 		--net smscraper-net \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \

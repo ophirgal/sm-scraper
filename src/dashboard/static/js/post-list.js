@@ -1,5 +1,5 @@
 function renderPostList() {
-    var sampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in magna nisl. Nunc convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
+    var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
 
     if (postList.length == 0) { // for testing without data!
       postList = [
@@ -30,7 +30,21 @@ function renderPostList() {
           'post_url': "https://google.com",
           'linked_urls': "",
           'comment_count': "5"
-        }
+        },
+        {
+          
+            'relevance_score': "3",
+            'platform': "Reddit",
+            'subplatform': "PoliceBrutality",
+            'time_posted': "2021-04-02",
+            'time_scraped': "2021-04-03",
+            'title': 'Post 1 Title', 
+            'body': sampleText, 
+            'author': "JohnSmith", 
+            'post_url': "https://google.com",
+            'linked_urls': "",
+            'comment_count': "5"
+          },
       ];
     }
     
