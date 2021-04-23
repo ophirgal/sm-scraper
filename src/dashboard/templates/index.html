@@ -107,8 +107,17 @@
       <!-- POSTS/VISUALIZATIONS SECTION -->
       <div class="row">
         <div class="col-7 container-fluid" style="max-height: 65vh;">
-          <div class="col-title">
-            Posts
+          <div class="mb-2">
+            <div class="col-title inline">
+              Posts
+            </div>
+            <div class="right inline">
+              <select name="sort-posts-metric" id="sort-posts-metric" onchange="renderPostList()">
+                <option value="relevance">Relevance</option>
+                <option value="date">Date</option>
+                <option value="comments">Comments</option>
+              </select>
+            </div>
           </div>
           <div class="pl-1 pr-1 overflow-auto" id="postlist" style="max-height: 65vh;">
             
