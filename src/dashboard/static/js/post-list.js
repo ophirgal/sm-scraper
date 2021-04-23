@@ -5,7 +5,7 @@ function renderPostList() {
       postList = [
         {
           
-          'relevance_score': "score",
+          'relevance_score': "1",
           'platform': "Reddit",
           'subplatform': "PoliceBrutality",
           'time_posted': "2021-04-01",
@@ -19,26 +19,66 @@ function renderPostList() {
         },
         {
           
-          'relevance_score': "score",
+          'relevance_score': "2",
           'platform': "Reddit",
           'subplatform': "PoliceBrutality",
-          'time_posted': "2021-04-01",
-          'time_scraped': "2021-04-02",
+          'time_posted': "2021-04-02",
+          'time_scraped': "2021-04-03",
           'title': 'Post 1 Title', 
           'body': sampleText, 
           'author': "JohnSmith", 
           'post_url': "https://google.com",
           'linked_urls': "",
-          'comment_count': "100"
+          'comment_count': "5"
         }
       ];
     }
+    
+    // sorting
+    var sortMetric = document.getElementById("sort-posts-metric").value;
+    var sortedPostList = sortPosts(postList, sortMetric);
+
     var listNode = document.getElementById("postlist");
     clearNode(listNode);
+    
     // build list item and append for each post
     postList.forEach(post => {
       listNode.appendChild(buildPostCard(post));
     });
+}
+
+function sortPosts(postList, sortMetric) {
+  switch (sortMetric) {
+    case "relevance":
+      postList.sort((p1, p2) => {
+        var v1 = parseInt(p1.relevance_score);
+        var v2 = parseInt(p2.relevance_score);
+        if (v1 > v2) return -1;
+        if (v1 < v2) return 1;
+        return 0;
+      });
+      break;
+    case "date":
+      postList.sort((p1, p2) => {
+        var v1 = Date.parse(p1.time_posted);
+        var v2 = Date.parse(p2.time_posted);
+        if (v1 > v2) return -1;
+        if (v1 < v2) return 1;
+        return 0;
+      });
+      break;
+    case "comments":
+      postList.sort((p1, p2) => {
+        var v1 = parseInt(p1.comment_count);
+        var v2 = parseInt(p2.comment_count);
+        if (v1 > v2) return -1;
+        if (v1 < v2) return 1;
+        return 0;
+      });
+      break;
+  }
+
+  return postList;
 }
 
 function buildPostCard(post) {

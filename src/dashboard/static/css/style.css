@@ -12,6 +12,10 @@ body {
     background-color: rgb(255, 81, 0);
 }
 
+.right {
+    float: right;
+}
+
 .font-small {
     font-size: 12px;
 }
