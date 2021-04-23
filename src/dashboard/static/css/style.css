@@ -20,6 +20,10 @@ body {
     font-size: 12px;
 }
 
+.font-medium {
+    font-size: 14px;
+}
+
 .font-large {
     font-size: 18px;
 }
