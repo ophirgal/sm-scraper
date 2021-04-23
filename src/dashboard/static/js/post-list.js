@@ -129,13 +129,7 @@ function buildPostCard(post) {
   node.appendChild(buildInfoRow(post));
   node.appendChild(buildTitle(post));
   node.appendChild(buildContentLink(post));
-
-  // body
-  var bodyContainer = document.createElement("div");
-  var textNode = document.createTextNode(post.body);
-  bodyContainer.appendChild(textNode);  
-  node.appendChild(bodyContainer);
-
+  node.appendChild(buildBody(post));
   node.appendChild(buildStats(post));
 
   return node;
@@ -192,11 +186,19 @@ function buildContentLink(post) {
   return contentLinkContainer;
 }
 
+function buildBody(post) { 
+  var bodyContainer = document.createElement("div");
+  bodyContainer.classList.add("mb-1", "font-medium");
+  var textNode = document.createTextNode(post.body);
+  bodyContainer.appendChild(textNode);  
+  return bodyContainer;
+
+}
+
 function buildStats(post) { 
   var statsContainer = document.createElement("div");
   statsContainer.classList.add("mb-1", "font-small");
   var textNode = document.createTextNode(post.rating + "▲ • " + post.comment_count + " comments");
   statsContainer.appendChild(textNode);  
   return statsContainer;
-
 }
