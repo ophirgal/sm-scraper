@@ -54,4 +54,4 @@ def get_lemma():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port=9001, use_reloader=False)
+    app.run(host='0.0.0.0', debug=False, port=9001, use_reloader=False)

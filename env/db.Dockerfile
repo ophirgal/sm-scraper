@@ -8,7 +8,7 @@ FROM ubuntu:16.04
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
 # Add PostgreSQL's repository. It contains the most recent stable release
 #  of PostgreSQL.
-# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
+# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.5
 #  There are some warnings (in red) that show up during the build. You can hide
 #  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
 RUN apt-key adv \
@@ -19,10 +19,10 @@ RUN apt-key adv \
     && apt-get update && apt-get install -y \
         python-software-properties \
         software-properties-common \
-        postgresql-9.3 \
-        postgresql-client-9.3 \
-        postgresql-contrib-9.3 \
-        postgresql-server-dev-9.3 \
+        postgresql-9.5 \
+        postgresql-client-9.5 \
+        postgresql-contrib-9.5 \
+        postgresql-server-dev-9.5 \
         libpq-dev \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update && apt-get install -y \
@@ -35,7 +35,7 @@ RUN apt-key adv \
 # Note: The official Debian and Ubuntu images automatically ``apt-get clean``
 # after each ``apt-get``
 
-# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
+# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.5`` package when it was ``apt-get installed``
 USER postgres
 
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
@@ -49,17 +49,17 @@ RUN /etc/init.d/postgresql start \
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
-# And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
-RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.3/main/pg_hba.conf \
-    && echo "host  all  cmsc828d  127.0.0.1/32  trust" >> /etc/postgresql/9.3/main/pg_hba.conf \
-    && echo "host  all  cmsc828d  ::1/0  trust" >> /etc/postgresql/9.3/main/pg_hba.conf \
-    && sed -i -e 's/md5/trust/g' /etc/postgresql/9.3/main/pg_hba.conf \
-    && sed -i -e 's/peer/trust/g' /etc/postgresql/9.3/main/pg_hba.conf \
-    && echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
+# And add ``listen_addresses`` to ``/etc/postgresql/9.5/main/postgresql.conf``
+RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.5/main/pg_hba.conf \
+    && echo "host  all  cmsc828d  127.0.0.1/32  trust" >> /etc/postgresql/9.5/main/pg_hba.conf \
+    && echo "host  all  cmsc828d  ::1/0  trust" >> /etc/postgresql/9.5/main/pg_hba.conf \
+    && sed -i -e 's/md5/trust/g' /etc/postgresql/9.5/main/pg_hba.conf \
+    && sed -i -e 's/peer/trust/g' /etc/postgresql/9.5/main/pg_hba.conf \
+    && echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
 
 COPY ./data/smscraper/smscraper.sql ./data/smscraper/smscraper.tsv /data/
 RUN service postgresql restart \
-    && psql -Ucmsc828d -d smscraper -f /data/smscraper.sql \
+    && psql -U cmsc828d -d smscraper -f /data/smscraper.sql \
     && service postgresql stop
 
 
@@ -71,7 +71,7 @@ EXPOSE 5432
 # VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", "/var/lib/postgresql/9.5/main", "-c", "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
 
 
 ## instructions:

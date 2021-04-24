@@ -139,7 +139,6 @@ dmypy.json
 **/.DS_Store
 
 # shu put here
-data/
 temp/
 help/
 help
