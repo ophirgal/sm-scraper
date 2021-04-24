@@ -59,7 +59,6 @@ if __name__ == "__main__":
 
     # try to connect to DB
     try:
-        global conn
         conn = pg.connect(user="cmsc828d",
                         password="pword",
                         host=app.config['db_host'],
