@@ -1,5 +1,8 @@
 FROM python:3.8
 
+# define environment variable(s)
+ENV HOST_OS=DEFAULT
+
 WORKDIR .
 
 COPY . .
@@ -14,7 +17,7 @@ RUN python3 -m pip install \
         numpy \
         requests
 
-CMD python3 -m src.scraper.scraper
+CMD python3 -m src.scraper.scraper --host-os=$HOST_OS
 
 ## instructions:
 # change dependencies above if needed

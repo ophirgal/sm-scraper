@@ -9,6 +9,7 @@ import psycopg2
 import requests
 import json
 import collections
+import argparse
 
 reddit = praw.Reddit(
     client_id='GrsVdaeNmOR9OQ', 
@@ -24,7 +25,9 @@ class Scraper:
         client_secret='8BcACHQ1GYERv1FlMeWwF5MH0vaUXQ', 
         password="oobaka@Reddit7", 
         user_agent="testscript by u/JobQuick735", 
-        username="JobQuick735"):
+        username="JobQuick735",
+        db_host='172.28.0.9',
+        nlp_host='172.28.0.2'):
         self.reddit = praw.Reddit(
             client_id=client_id, 
             client_secret=client_secret,
@@ -32,18 +35,20 @@ class Scraper:
             user_agent=user_agent,
             username=username,
         )
+        self.db_host = db_host
+        self.nlp_host = nlp_host
     
     def getConnection(self, databaseName='smscraper'):
         connection = psycopg2.connect(user="cmsc828d",
                                         password="pword",
-                                        host="172.28.0.9",
+                                        host=self.db_host,
                                         port="5432",
                                         database=databaseName)
         return connection
     
     def getLemmatized(self,text):
         response = requests.get(
-            url= 'http://172.28.0.2:9001/get-lemma',
+            url=f'http://{self.nlp_host}:9001/get-lemma',
             params={
             'text': text,
             },
@@ -52,7 +57,7 @@ class Scraper:
 
     def get_relevance_score(self,text, classifier= 'has_police'):
         response = requests.get(
-            url = 'http://172.28.0.2:9001/get-relevance',
+            url = f'http://{self.nlp_host}:9001/get-relevance',
             params ={
             'text': text,
             'classifier':classifier,
@@ -63,7 +68,7 @@ class Scraper:
 
     def get_entities(self, text):
         response = requests.get(
-            url='http://172.28.0.2:9001/get-entities',
+            url=f'http://{self.nlp_host}:9001/get-entities',
             params={
                 'text': text,
             },
@@ -169,9 +174,19 @@ class Scraper:
                     comment_count = EXCLUDED.comment_count''',
                     row)
             connection.commit()
-	
-scrapeObj = Scraper()
-scrapeObj.scrape()
+
+if __name__ == '__main__':	
+    
+    # Define and parse (optional) arguments for the script 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
+    args = parser.parse_args()
+    host_os = args.host_os
+    nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
+    db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
+
+    scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host)
+    scrapeObj.scrape()
 
 
 
