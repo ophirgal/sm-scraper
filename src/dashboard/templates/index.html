@@ -143,11 +143,43 @@
   </div>
 </div>
 <script>
-  var postList = [];
+  /* 
+  postList is a list of post dictionaries. The server will return this. Example:
+  [{   
+    'relevance_score': "1",
+    'platform': "Reddit",
+    'subplatform': "PoliceBrutality",
+    'time_posted': "2021-04-01",
+    'time_scraped': "2021-04-02",
+    'title': "string", 
+    'body': "string", 
+    'author': "string", 
+    'post_url': "url string",
+    'linked_urls': "url string?" this could be a list also, up to you/whatever the db contains,
+    'comment_count': "num string",
+    'rating': "num string"
+  }, {...}]
+  */
+  var postList = []; 
+
+  /* 
+  dateRangeSetting is the current type mode of dateRange. 
+  Note, this is not a filter! Use dateRange, not dateRangeSetting for queries!
+  From list: ["1D", "1W", "1M", "3M", "1Y", "All", "Custom"]
+  */
   var dateRangeSetting = "";
+
+  /*
+  dateRange is a dictionary containing 'min' and 'max' date.
+  js Date object
+  */
   var dateRange = {'min': Date.now(), 'max': Date.now()};
+
+  /* keywords is a list of unlemmatized keyword strings */
   var keywords = [];
+  /* jurisdictions is a list of unlemmatized jurisdictions strings */
   var jurisdictions = [];
+  /* sources is a list of unlemmatized source (subreddit) strings */
   var sources = [];
 
   // Render all visualizations (the function needs to have global scope)
