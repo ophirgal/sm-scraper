@@ -18,7 +18,7 @@ def main(argv):
 
 
 @ app.route('/')
-def renderPage():
+def render_page():
     return render_template("index.html")
 
 
@@ -49,21 +49,48 @@ def get_data():
 ##########################    OPHIR'S SECTION (BEGIN)    ######################
 
 
+def _json_response(data):
+    resp = Response(response=json.dumps(data), status=200,
+                    mimetype='application/json')
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    return resp
+
+
 @ app.route('/get-stats')
 def get_stats():
-    global reqState
-    global conn
-    thisState = int(request.args.get('reqState'))
-    if reqState != thisState:
-        print("STALE REQ: ABORTING")
-        return
+    # # stale request handler
+    # global reqState
+    # thisState = int(request.args.get('reqState'))
+    # if reqState != thisState:
+    #     print("STALE REQ: ABORTING")
+    #     return
 
     cur = conn.cursor()
+    # get total posts selected
+    query = f'select count(*) from scraped_data;'
+    cur.execute(query)
+    posts_selected = int(cur.fetchone()[0])
+    
+    # get total users selected
+    query = f'select count(distinct(author)) from scraped_data;'
+    cur.execute(query)
+    users_selected = int(cur.fetchone()[0])
+    
+    # get total posts scraped
+    query = f'select count(*) from scraped_data;'
+    cur.execute(query)
+    posts_scraped = int(cur.fetchone()[0])
+    
+    # get total posts relevant
+    query = f'select count(*) from scraped_data;'
+    cur.execute(query)
+    posts_relevant = int(cur.fetchone()[0])
 
-    jsonData = {'data': ""}
-    resp = Response(response=json.dumps(jsonData),
-                    status=200, mimetype='application/json')
-    return resp
+    data = {'posts_selected': posts_selected,
+            'users_selected': users_selected, 
+            'posts_scraped': posts_scraped,
+            'posts_relevant': posts_relevant}
+    return _json_response(data)
 
 
 ##########################    OPHIR'S SECTION (END)      ######################
