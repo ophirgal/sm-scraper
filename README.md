@@ -5,10 +5,15 @@ This final project idea is a collaboration with the Full Disclosure Project, thr
 
 
 
-# running containers
-- containers: db, scraper, dashboard, nlp
-- change `env/machine_config.bashrc` w/ PROJECT_DN; absolute path to sm-scraper
-- review dependencies in `env/{your_env}.Dockerfile`, and change CMD line to your main module; see `env/nlp.Dockerfile` if you need example
-- to run, `make {your_env}`; this automatically builds the container too
-- start up other envs as you depend; i.e. scraper depends on nlp
-- if you want a shell, run `make {your_env}_shell`
+# Running Containers
+
+- Available containers: `db`, `scraper`, `dashboard`, and `nlp`.
+- Change `env/machine_config.bashrc` w/ PROJECT_DN; absolute path to `sm-scraper`.
+- Review dependencies in `env/<desired container>.Dockerfile`, and change the CMD
+  line to your main module; see `env/nlp.Dockerfile` if you need an example.
+- To run the project, first run `make add_smscraper_net_<your host OS>`, e.g.
+  for mac run `make add_smscraper_net_mac`.
+- Then, to run individual containers run `make <desired container>_<your host OS>`; this automatically builds and runs the container.
+- Start up other envs as you depend; i.e. `scraper` and `dashboard` both depend on `nlp`.
+- If you want a shell, run `make <your_env>_shell` (currently applicable only
+  for Linux machines).
