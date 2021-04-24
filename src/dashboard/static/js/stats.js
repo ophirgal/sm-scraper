@@ -13,7 +13,9 @@ async function render_stats(filters) {
     let stats = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
 
-    console.log('stats', stats)
+    // assuming `postList` is a global variable
+    stats.posts_selected = postList.length
+    stats.users_selected = new Set(d3.map(postList, d => d.author)).size
 
     document.querySelector('#stat1').innerHTML = `
         <div class="d-flex justify-content-center ">

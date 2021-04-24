@@ -66,29 +66,20 @@ def get_stats():
     #     return
 
     cur = conn.cursor()
-    # get total posts selected
-    query = f'select count(*) from scraped_data;'
-    cur.execute(query)
-    posts_selected = int(cur.fetchone()[0])
-    
-    # get total users selected
-    query = f'select count(distinct(author)) from scraped_data;'
-    cur.execute(query)
-    users_selected = int(cur.fetchone()[0])
-    
+    relevance_threshold = 3
+
     # get total posts scraped
     query = f'select count(*) from scraped_data;'
     cur.execute(query)
     posts_scraped = int(cur.fetchone()[0])
-    
+
     # get total posts relevant
-    query = f'select count(*) from scraped_data;'
+    query = f'select count(*) from scraped_data \
+        where cast(relevance_score as int) >= {relevance_threshold};'
     cur.execute(query)
     posts_relevant = int(cur.fetchone()[0])
 
-    data = {'posts_selected': posts_selected,
-            'users_selected': users_selected, 
-            'posts_scraped': posts_scraped,
+    data = {'posts_scraped': posts_scraped,
             'posts_relevant': posts_relevant}
     return _json_response(data)
 
