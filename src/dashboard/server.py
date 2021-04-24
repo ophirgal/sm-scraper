@@ -23,7 +23,7 @@ def renderPage():
 
 
 @ app.route('/get-state')
-def getState():
+def get_state():
     global reqState
     reqState += 1
     resp = Response(response=str(reqState), status=200, mimetype='text/plain')
@@ -31,7 +31,26 @@ def getState():
 
 
 @ app.route('/get-data')
-def getData():
+def get_data():
+    global reqState
+    global conn
+    thisState = int(request.args.get('reqState'))
+    if reqState != thisState:
+        print("STALE REQ: ABORTING")
+        return
+
+    cur = conn.cursor()
+
+    jsonData = {'data': ""}
+    resp = Response(response=json.dumps(jsonData),
+                    status=200, mimetype='application/json')
+    return resp
+
+##########################    OPHIR'S SECTION (BEGIN)    ######################
+
+
+@ app.route('/get-stats')
+def get_stats():
     global reqState
     global conn
     thisState = int(request.args.get('reqState'))
@@ -47,11 +66,15 @@ def getData():
     return resp
 
 
+##########################    OPHIR'S SECTION (END)      ######################
+
+
 if __name__ == "__main__":
 
-    # Define and parse (optional) arguments for the script 
+    # Define and parse (optional) arguments for the script
     parser = argparse.ArgumentParser()
-    parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
+    parser.add_argument('--host-os', default='mac', type=str,
+                        choices=['windows', 'mac', 'linux'])
     args = parser.parse_args()
     host_os = args.host_os
     app.config['db_host'] = 'localhost' if host_os == 'linux' else '172.28.0.9'
@@ -60,14 +83,14 @@ if __name__ == "__main__":
     # try to connect to DB
     try:
         conn = pg.connect(user="cmsc828d",
-                        password="pword",
-                        host=app.config['db_host'],
-                        port="5432",
-                        database='smscraper')
+                          password="pword",
+                          host=app.config['db_host'],
+                          port="5432",
+                          database='smscraper')
         print('Successfully connected to the database.')
     except Exception as e:
         print(e)
         print("Unable to connect to the database!")
-    
+
     flask_host = 'localhost' if 'localhost' in sys.argv else '0.0.0.0'
     app.run(host=flask_host, debug=True, port=5000)
