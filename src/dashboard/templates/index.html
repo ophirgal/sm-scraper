@@ -173,6 +173,17 @@
   /* sources is a list of unlemmatized source (subreddit) strings */
   var sources = [];
 
+  function getFilters() {
+    let a = [{year: 'numeric'},{month: 'numeric'},{day: 'numeric'}];
+    return {
+      dateMin: join(dateRange.min, a, '-'),
+      dateMax: join(dateRange.max, a, '-'),
+      keywords: keywords,
+      jurisdictions: jurisdictions,
+      sources: sources
+    }
+  }
+
   // Render all visualizations (the function needs to have global scope)
   function renderAll(
     stats = true,
@@ -181,30 +192,32 @@
     postlist = true,
     filters = {}
   ) {
+    filters = getFilters();
+    console.log(filters);
     console.log("Rendering all");
     if (stats) render_stats(filters)
     if (times_vis) render_times_vis(filters)
     if (words_vis) render_words_vis(filters)
-    if (postlist) renderPostList()
+    if (postlist) renderPostList(filters)
   }
 
   // event listeners
   window.addEventListener('load', renderAll)
   window.addEventListener('resize', renderAll)
   document.getElementById("keyword-input").addEventListener("keydown", function (e) {
-      if (e.keyCode === 13) {
-          addKeywords(e);
-      }
+    if (e.keyCode === 13) {
+        addKeywords(e);
+    }
   });
   document.getElementById("jurisdiction-input").addEventListener("keydown", function (e) {
-      if (e.keyCode === 13) {
-          addJurisdictions(e);
-      }
+    if (e.keyCode === 13) {
+        addJurisdictions(e);
+    }
   });
   document.getElementById("source-input").addEventListener("keydown", function (e) {
-      if (e.keyCode === 13) {
-          addSources(e);
-      }
+    if (e.keyCode === 13) {
+        addSources(e);
+    }
   });
 
   function init() {

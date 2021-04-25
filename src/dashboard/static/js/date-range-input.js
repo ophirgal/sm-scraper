@@ -3,6 +3,7 @@
 function dateRangeSelect(val) {
     dateRangeSetting = val;
     updateDateRange();
+    renderAll();
 }
 
 function updateDateRange() {
@@ -41,6 +42,7 @@ function updateDateRangePickers() {
         startDate.setDate(startDate.getDate()-diff);
         startNode.value = startDate.toISOString().split('T')[0];
         endNode.value = endDate.toISOString().split('T')[0];
+        dateRange = {min: startDate, max: endDate};
     }
     
 }

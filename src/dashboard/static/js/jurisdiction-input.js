@@ -3,6 +3,7 @@ function addJurisdictions(e) {
     e.target.value = "";
     jurisdictions = jurisdictions.concat(list).unique().noSpace();
     updateJurisdictionPills();
+    renderAll();
 }
 
 function removeJurisdiction(s) {

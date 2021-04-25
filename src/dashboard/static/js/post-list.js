@@ -1,10 +1,26 @@
-function renderPostList() {
-    var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
+async function renderPostList(filters) {
+    // fetch stats data from server
+    let url = new URL("http://localhost:5000/get-posts"),
+        params = filters
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
+    let posts = await fetch(url, { "credentials": "same-origin" })
+        .then(response => response.json())
+
+    postList = posts.postList;
+    for (var i = 0; i < postList.length; i++) {
+      post = postList[i];
+      if (post.body.length > 400) {
+        post.body = post.body.substring(0,400) + " ...";
+      }
+      postList[i] = post;
+    }
+
+    /////////////////// FOR TESTING WHEN NO DATA
     if (postList.length == 0) { // for testing without data!
+      var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
       postList = [
         {
-          
           'relevance_score': "1",
           'platform': "Reddit",
           'subplatform': "PoliceBrutality",
@@ -19,7 +35,6 @@ function renderPostList() {
           'rating': "1200"
         },
         {
-          
           'relevance_score': "2",
           'platform': "Reddit",
           'subplatform': "Justice",
@@ -34,7 +49,6 @@ function renderPostList() {
           'rating': "25"
         },
         {
-          
           'relevance_score': "3",
           'platform': "Reddit",
           'subplatform': "PoliceBrutality",
@@ -49,7 +63,6 @@ function renderPostList() {
           'rating': "4234"
         },
         {
-          
           'relevance_score': "4",
           'platform': "Reddit",
           'subplatform': "Police",
@@ -74,7 +87,7 @@ function renderPostList() {
     clearNode(listNode);
     
     // build list item and append for each post
-    postList.forEach(post => {
+    sortedPostList.forEach(post => {
       listNode.appendChild(buildPostCard(post));
     });
 }
@@ -138,7 +151,7 @@ function buildPostCard(post) {
 function buildInfoRow(post) {
   // subreddit
   var infoRow = document.createElement("div");
-  infoRow.classList.add("mb-0", "font-small", "font-bold");
+  infoRow.classList.add("mb-0", "font-medium", "font-bold");
 
   var redditPrefix = post.platform == "Reddit" ? "r/" : "";
   var subReddit = document.createElement('a');
@@ -157,7 +170,10 @@ function buildInfoRow(post) {
   user.href = "https://www.reddit.com/user/" + post.author;
   infoRow.appendChild(user);  
 
-  var textNode = document.createTextNode(" on " + post.time_posted + " • Last updated on " + post.time_scraped);
+  let a = [{day: 'numeric'}, {month: 'short'}, {year: 'numeric'}];
+  var textNode = document.createTextNode(
+    " on " + join(Date.parse(post.time_posted), a, ' ') 
+    + " • Last updated on " + join(Date.parse(post.time_scraped), a, ' '));
   infoRow.appendChild(textNode);  
   return infoRow;
 }
@@ -197,7 +213,7 @@ function buildBody(post) {
 
 function buildStats(post) { 
   var statsContainer = document.createElement("div");
-  statsContainer.classList.add("mb-1", "font-small");
+  statsContainer.classList.add("mb-1", "font-medium");
   var textNode = document.createTextNode(post.rating + "▲ • " + post.comment_count + " comments");
   statsContainer.appendChild(textNode);  
   return statsContainer;

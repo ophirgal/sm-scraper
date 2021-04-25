@@ -6,6 +6,15 @@ function clearNode(node) {
     }
 }
 
+// date formatting
+function join(t, a, s) {
+    function format(m) {
+       let f = new Intl.DateTimeFormat('en', m);
+       return f.format(t);
+    }
+    return a.map(format).join(s);
+ }
+
 // removes duplicates from array of strings
 Array.prototype.unique = function() {
     var a = this.concat();

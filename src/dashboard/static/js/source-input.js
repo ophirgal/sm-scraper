@@ -3,6 +3,7 @@ function addSources(e) {
     e.target.value = "";
     sources = sources.concat(list).unique().noSpace();
     updateSourcePills();
+    renderAll();
 }
 
 function removeSource(s) {

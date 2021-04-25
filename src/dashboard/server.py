@@ -21,27 +21,38 @@ def main(argv):
 def render_page():
     return render_template("index.html")
 
+def getFilterSubstring(params):
+    return "WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}'".format(params.get('dateMin'), params.get('dateMax'))
 
-@ app.route('/get-state')
-def get_state():
-    global reqState
-    reqState += 1
-    resp = Response(response=str(reqState), status=200, mimetype='text/plain')
-    return resp
-
-
-@ app.route('/get-data')
+@ app.route('/get-posts')
 def get_data():
-    global reqState
-    global conn
-    thisState = int(request.args.get('reqState'))
-    if reqState != thisState:
-        print("STALE REQ: ABORTING")
-        return
+    #thisState = request.args.get('reqState')
 
     cur = conn.cursor()
 
-    jsonData = {'data': ""}
+    # get posts
+    query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    postList = []
+    for p in res:
+        postList.append({ 
+            'relevance_score': p[1],
+            'platform': p[2],
+            'subplatform': p[3],
+            'time_posted': p[4],
+            'time_scraped': p[5],
+            'title': p[6], 
+            'body': p[8], 
+            'author': p[10], 
+            'post_url': p[11],
+            'linked_urls': "https://google.com",
+            'comment_count': p[12],
+            'rating': "-1"
+        })
+
+    jsonData = {'postList': postList}
     resp = Response(response=json.dumps(jsonData),
                     status=200, mimetype='application/json')
     return resp
