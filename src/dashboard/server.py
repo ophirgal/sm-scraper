@@ -30,21 +30,39 @@ def get_state():
     return resp
 
 
-@ app.route('/get-data')
+@ app.route('/get-posts')
 def get_data():
-    global reqState
-    global conn
-    thisState = int(request.args.get('reqState'))
-    if reqState != thisState:
-        print("STALE REQ: ABORTING")
-        return
-
     cur = conn.cursor()
 
-    jsonData = {'data': ""}
+    # get posts
+    query = f'select * from scraped_data;'
+    cur.execute(query)
+    res = cur.fetchall()
+
+    postList = []
+    for p in res:
+        postList.append({ 
+            'relevance_score': p[1],
+            'platform': p[2],
+            'subplatform': p[3],
+            'time_posted': p[4],
+            'time_scraped': p[5],
+            'title': p[6], 
+            'body': p[8], 
+            'author': p[10], 
+            'post_url': p[11],
+            'linked_urls': "https://google.com",
+            'comment_count': p[12],
+            'rating': "-1"
+        })
+
+    jsonData = {'postList': postList}
     resp = Response(response=json.dumps(jsonData),
                     status=200, mimetype='application/json')
     return resp
+
+def getFilterSubstring():
+    return ""
 
 ##########################    OPHIR'S SECTION (BEGIN)    ######################
 
