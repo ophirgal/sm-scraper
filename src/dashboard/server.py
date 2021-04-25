@@ -21,21 +21,17 @@ def main(argv):
 def render_page():
     return render_template("index.html")
 
-
-@ app.route('/get-state')
-def get_state():
-    global reqState
-    reqState += 1
-    resp = Response(response=str(reqState), status=200, mimetype='text/plain')
-    return resp
-
+def getFilterSubstring(params):
+    return "WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}'".format(params.get('dateMin'), params.get('dateMax'))
 
 @ app.route('/get-posts')
 def get_data():
+    #thisState = request.args.get('reqState')
+
     cur = conn.cursor()
 
     # get posts
-    query = f'select * from scraped_data;'
+    query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
     cur.execute(query)
     res = cur.fetchall()
 
@@ -60,9 +56,6 @@ def get_data():
     resp = Response(response=json.dumps(jsonData),
                     status=200, mimetype='application/json')
     return resp
-
-def getFilterSubstring():
-    return ""
 
 ##########################    OPHIR'S SECTION (BEGIN)    ######################
 

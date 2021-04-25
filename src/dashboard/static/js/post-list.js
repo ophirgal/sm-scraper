@@ -1,10 +1,7 @@
-async function renderPostList() {
+async function renderPostList(filters) {
     // fetch stats data from server
     let url = new URL("http://localhost:5000/get-posts"),
-        params = {
-            p1: 35.696233,
-            p2: 139.570431
-        }
+        params = filters
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
     let posts = await fetch(url, { "credentials": "same-origin" })
@@ -149,14 +146,6 @@ function buildPostCard(post) {
   node.appendChild(buildStats(post));
 
   return node;
-}
-
-function join(t, a, s) {
-  function format(m) {
-     let f = new Intl.DateTimeFormat('en', m);
-     return f.format(t);
-  }
-  return a.map(format).join(s);
 }
 
 function buildInfoRow(post) {

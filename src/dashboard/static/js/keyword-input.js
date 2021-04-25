@@ -3,6 +3,7 @@ function addKeywords(e) {
     e.target.value = "";
     keywords = keywords.concat(list).unique().noSpace();
     updateKeywordPills();
+    renderAll();
 }
 
 function removeKeyword(s) {
