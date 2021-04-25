@@ -104,20 +104,6 @@ def get_date_histogram():
     #     print("STALE REQ: ABORTING")
     #     return
 
-    cur = conn.cursor()
-
-    return _json_response(data)
-
-
-@ app.route('/get-word-distribution')
-def get_word_distribution():
-    # # stale request handler
-    # global reqState
-    # thisState = int(request.args.get('reqState'))
-    # if reqState != thisState:
-    #     print("STALE REQ: ABORTING")
-    #     return
-
     min_date = request.args.get('minDate')
     max_date = request.args.get('maxDate')
     total_bins = request.args.get('totalBins')
@@ -147,6 +133,21 @@ def get_word_distribution():
     cur.execute(query)
     data = [{'binMin': str(d[0]), 'binMax': str(d[1]), 'count': int(d[2])}
             for d in cur.fetchall()]
+    return _json_response(data)
+
+
+@ app.route('/get-word-distribution')
+def get_word_distribution():
+    # # stale request handler
+    # global reqState
+    # thisState = int(request.args.get('reqState'))
+    # if reqState != thisState:
+    #     print("STALE REQ: ABORTING")
+    #     return
+
+
+    cur = conn.cursor()
+   
     return _json_response(data)
 
 

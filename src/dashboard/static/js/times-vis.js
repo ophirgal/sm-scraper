@@ -2,6 +2,7 @@
  * Renders a histogram for selection times
  */
 async function render_times_vis(filters = {}) {
+
     // set the dimensions and margins of the graph
     let margin = { top: 35, right: 25, bottom: 20, left: 30 }
     let width = document.querySelector('#times-vis').offsetWidth
@@ -16,7 +17,7 @@ async function render_times_vis(filters = {}) {
     /* opts.top = '50px'
     var spinner = new Spinner(opts).spin(document.querySelector('#times-vis')) */
 
-    let url = new URL("http://localhost:5000/get-word-distribution"),
+    let url = new URL("http://localhost:5000/get-date-histogram"),
         params = {
             minDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.min),
             maxDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.max),
@@ -121,4 +122,8 @@ async function render_times_vis(filters = {}) {
         .style("font-style", "italic")
         .style("fill", "#505050")
         .text("Histogram of Selected Posts by Date");
+
+    // remove old plots while still there
+    while (d3.selectAll("#times-vis > svg")['_groups'][0].length > 1) 
+        d3.select("#times-vis > svg").remove()
 }
