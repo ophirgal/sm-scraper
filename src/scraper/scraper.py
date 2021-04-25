@@ -39,8 +39,7 @@ class Scraper:
         self.nlp_host = nlp_host
     
     def getConnection(self, databaseName='smscraper'):
-        connection = psycopg2.connect(user="cmsc828d",
-                                        password="pword",
+        connection = psycopg2.connect(user="postgres",
                                         host=self.db_host,
                                         port="5432",
                                         database=databaseName)

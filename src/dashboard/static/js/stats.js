@@ -10,6 +10,7 @@ async function render_stats(filters) {
         }
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
+    // fetch data from server
     let stats = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
 

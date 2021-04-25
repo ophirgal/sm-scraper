@@ -39,6 +39,18 @@ db_mac: db_docker
 		-it '${PROJECT_NAME}:db'
 db_docker:
 	sudo docker build -t ${PROJECT_NAME}:db -f ./env/db.Dockerfile ./env
+db_windows_shell: db_docker_windows
+	docker run \
+		--rm \
+		--name db \
+		--net smscraper-net \
+		--ip 172.28.0.9 \
+		-w '/workdir' \
+		-w '${PROJECT_DN}' \
+		-v '/dev/shm:/dev/shm' \
+		-v '${PROJECT_DN}:${PROJECT_DN}' \
+		-it '${PROJECT_NAME}:db' \
+		bash
 db_windows: db_docker_windows
 	docker run \
 		--rm \

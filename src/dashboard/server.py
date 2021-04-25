@@ -84,6 +84,61 @@ def get_stats():
     return _json_response(data)
 
 
+@ app.route('/get-date-histogram')
+def get_date_histogram():
+    # # stale request handler
+    # global reqState
+    # thisState = int(request.args.get('reqState'))
+    # if reqState != thisState:
+    #     print("STALE REQ: ABORTING")
+    #     return
+
+    cur = conn.cursor()
+
+    return _json_response(data)
+
+
+@ app.route('/get-word-distribution')
+def get_word_distribution():
+    # # stale request handler
+    # global reqState
+    # thisState = int(request.args.get('reqState'))
+    # if reqState != thisState:
+    #     print("STALE REQ: ABORTING")
+    #     return
+
+    min_date = request.args.get('minDate')
+    max_date = request.args.get('maxDate')
+    total_bins = request.args.get('totalBins')
+
+    if min_date == max_date:
+        return 'Make sure date range is valid (at least one day apart).', 500
+
+    cur = conn.cursor()
+    casted_min_date = f"'{min_date}'::timestamp"
+    casted_max_date = f"'{max_date}'::timestamp"
+    bin_size = f'(({casted_max_date}-{casted_min_date}) / {total_bins})'
+    query = \
+        f'select \
+        ({casted_min_date} + (bucket-1) * {bin_size}) as bin_min, \
+        ({casted_min_date} + (bucket  ) * {bin_size}) as bin_max, \
+        cnt from \
+            (select width_bucket(time_posted::timestamp, \
+                array(select generate_series( \
+                    {casted_min_date}, {casted_max_date}, {bin_size}))) \
+            as bucket, \
+            sum(case when (time_posted::timestamp >= {casted_min_date} and \
+                time_posted::timestamp <= {casted_max_date}) then 1 else 0 end) \
+                     as cnt \
+            from scraped_data \
+            group by bucket \
+            order by bucket) x;'
+    cur.execute(query)
+    data = [{'binMin': str(d[0]), 'binMax': str(d[1]), 'count': int(d[2])}
+            for d in cur.fetchall()]
+    return _json_response(data)
+
+
 ##########################    OPHIR'S SECTION (END)      ######################
 
 
@@ -100,8 +155,7 @@ if __name__ == "__main__":
 
     # try to connect to DB
     try:
-        conn = pg.connect(user="cmsc828d",
-                          password="pword",
+        conn = pg.connect(user="postgres",
                           host=app.config['db_host'],
                           port="5432",
                           database='smscraper')
