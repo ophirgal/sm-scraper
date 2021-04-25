@@ -9,9 +9,33 @@ async function render_times_vis(filters = {}) {
         - margin.left - margin.right
     let height = document.querySelector('#times-vis').offsetHeight
         - margin.top - margin.bottom
-    
+
     // remove existing svg (if any)
     d3.selectAll("#times-vis > svg").remove()
+
+    // make sure date inputs are valid and if not display "N/A"
+    if (new Date(dateRange.min) >= new Date(dateRange.max)) {
+        // append the svg object to the relevant div
+        var svg = d3.select("#times-vis")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr('fill', '#4f4f4f')
+            .attr("transform", `translate(${margin.left}, ${margin.top})`)
+
+        // Add Vis Title
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", (height / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-style", "italic")
+            .style("fill", "#505050")
+            .text("N/A")
+
+        return
+    }
 
     // trigger spinner
     /* opts.top = '50px'
@@ -29,14 +53,14 @@ async function render_times_vis(filters = {}) {
     let data = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
 
-    data = d3.map(data, d => { 
+    data = d3.map(data, d => {
         return {
             binMin: new Date(d.binMin).getTime(),
             binMax: new Date(d.binMax).getTime(),
             count: d.count
         }
     })
-    
+
     data = {
         minDate: dateRange.min,
         maxDate: dateRange.max,
@@ -73,8 +97,8 @@ async function render_times_vis(filters = {}) {
         .selectAll(".tick")
         .attr("transform", (d, i) => `translate(${x(d) + 5 + i * 7}, 0)`)
         .attr("font-size", "6pt")
-        /* .selectAll("text")
-        .each(insertLinebreaks) */
+    /* .selectAll("text")
+    .each(insertLinebreaks) */
 
     // add x-axis label
     svg.append("text")
@@ -115,15 +139,15 @@ async function render_times_vis(filters = {}) {
 
     // Add Vis Title
     svg.append("text")
-        .attr("x", (width / 2))             
+        .attr("x", (width / 2))
         .attr("y", 0 - (margin.top / 2))
-        .attr("text-anchor", "middle")  
+        .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
         .text("Histogram of Selected Posts by Date");
 
     // remove old plots while still there
-    while (d3.selectAll("#times-vis > svg")['_groups'][0].length > 1) 
+    while (d3.selectAll("#times-vis > svg")['_groups'][0].length > 1)
         d3.select("#times-vis > svg").remove()
 }

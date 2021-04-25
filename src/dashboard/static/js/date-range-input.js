@@ -1,6 +1,8 @@
 /* Date range pickers and period buttons */
 
 function dateRangeSelect(val) {
+    dateRange.min = new Date(document.querySelector('#start').value).getTime()
+    dateRange.max = new Date(document.querySelector('#end').value).getTime()
     dateRangeSetting = val;
     updateDateRange();
     renderAll();

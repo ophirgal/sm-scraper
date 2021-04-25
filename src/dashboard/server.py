@@ -108,8 +108,7 @@ def get_date_histogram():
     max_date = request.args.get('maxDate')
     total_bins = request.args.get('totalBins')
 
-    if min_date == max_date:
-        return 'Make sure date range is valid (at least one day apart).', 500
+    # assuming client-side validation of inputs
 
     cur = conn.cursor()
     casted_min_date = f"'{min_date}'::timestamp"
