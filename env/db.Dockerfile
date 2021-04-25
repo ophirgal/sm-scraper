@@ -55,7 +55,8 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/9.5/main/pg_hba.c
     && echo "host  all  cmsc828d  ::1/0  trust" >> /etc/postgresql/9.5/main/pg_hba.conf \
     && sed -i -e 's/md5/trust/g' /etc/postgresql/9.5/main/pg_hba.conf \
     && sed -i -e 's/peer/trust/g' /etc/postgresql/9.5/main/pg_hba.conf \
-    && echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
+    && echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf \
+	&& echo "dynamic_shared_memory_type=none" >> /etc/postgresql/9.5/main/postgresql.conf
 
 COPY ./data/smscraper/smscraper.sql ./data/smscraper/smscraper.tsv /data/
 RUN service postgresql restart \
