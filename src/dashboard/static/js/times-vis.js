@@ -3,6 +3,9 @@
  */
 async function render_times_vis(filters = {}) {
 
+    let selected_flag = document.querySelector('#vis-selected-btn')
+        .classList.contains('btn-primary')
+
     // set the dimensions and margins of the graph
     let margin = { top: 35, right: 25, bottom: 20, left: 30 }
     let width = document.querySelector('#times-vis').offsetWidth
@@ -45,7 +48,8 @@ async function render_times_vis(filters = {}) {
         params = {
             minDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.min),
             maxDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.max),
-            totalBins: 5
+            totalBins: 5,
+            selected_flag: selected_flag
         }
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
@@ -145,7 +149,7 @@ async function render_times_vis(filters = {}) {
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
-        .text("Histogram of Selected Posts by Date");
+        .text(`Histogram of ${selected_flag ? 'Selected' : 'All'} Posts by Date`);
 
     // remove old plots while still there
     while (d3.selectAll("#times-vis > svg")['_groups'][0].length > 1)

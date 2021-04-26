@@ -19,20 +19,16 @@ async function render_stats(filters) {
     stats.users_selected = new Set(d3.map(postList, d => d.author)).size
 
     document.querySelector('#stat1').innerHTML = `
-        <div class="d-flex justify-content-center ">
-            <strong>Posts selected:</strong>&nbsp;${d3.format("~s")(stats.posts_selected)}
-        </div>`
+    <div class="inline left"><strong>Posts selected:</strong></div>
+    <div class="inline right">${d3.format("~s")(stats.posts_selected)}</div>`
     document.querySelector('#stat2').innerHTML = `
-        <div class="d-flex justify-content-center ">
-            <strong>Users selected:</strong>&nbsp;${d3.format("~s")(stats.users_selected)}
-        </div>`
+        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline right">${d3.format("~s")(stats.users_selected)}</div>`
     document.querySelector('#stat3').innerHTML = `
-        <div class="d-flex justify-content-center ">
-        <strong>Posts scraped:</strong>&nbsp;${d3.format("~s")(stats.posts_scraped)}
-        </div>`
+        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline right">${d3.format("~s")(stats.posts_scraped)}</div>`
     document.querySelector('#stat4').innerHTML = `
-        <div class="d-flex justify-content-center ">
-            <strong>Posts relevant:</strong>&nbsp;${d3.format("~s")(stats.posts_relevant)}
-        </div>`
+        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline right">${d3.format("~s")(stats.posts_relevant)}</div>`
 }
 

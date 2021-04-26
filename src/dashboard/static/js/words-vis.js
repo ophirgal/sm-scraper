@@ -2,6 +2,10 @@
  * Renders a histogram for selection times
  */
 async function render_words_vis(filters = {}) {
+
+    let selected_flag = document.querySelector('#vis-selected-btn')
+        .classList.contains('btn-primary')
+
     // set the dimensions and margins of the graph
     let margin = { top: 30, right: 60, bottom: 10, left: 60 }
     let width = document.querySelector('#words-vis').offsetWidth
@@ -108,5 +112,5 @@ async function render_words_vis(filters = {}) {
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
-        .text("Distribution of Words in Selected Posts")
+        .text(`Distribution of Words in ${selected_flag ? 'Selected' : 'All'} Posts`)
 }

@@ -175,5 +175,4 @@ if __name__ == "__main__":
         print(e)
         print("Unable to connect to the database!")
 
-    flask_host = 'localhost' if 'localhost' in sys.argv else '0.0.0.0'
-    app.run(host=flask_host, debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=5000)
