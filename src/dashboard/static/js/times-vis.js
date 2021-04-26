@@ -41,7 +41,7 @@ async function render_times_vis(filters = {}) {
     /* opts.top = '50px'
     var spinner = new Spinner(opts).spin(document.querySelector('#times-vis')) */
 
-    /* let url = new URL("http://localhost:5000/get-date-histogram"),
+    let url = new URL("http://localhost:5000/get-date-histogram"),
         params = {
             minDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.min),
             maxDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.max),
@@ -66,19 +66,6 @@ async function render_times_vis(filters = {}) {
         maxDate: dateRange.max,
         maxCount: d3.max(d3.map(data, d => d.count)),
         data: data
-    } */
-
-    let data = {
-        minDate: 770452120500,
-        maxDate: 879250032000,
-        maxCount: 25,
-        data: [
-            { binMin: 770452120500, binMax: 792211702800, count: 5 },
-            { binMin: 792211702800, binMax: 813971285100, count: 15 },
-            { binMin: 813971285100, binMax: 835730867400, count: 25 },
-            { binMin: 835730867400, binMax: 857490449700, count: 20 },
-            { binMin: 857490449700, binMax: 879250032000, count: 25 }
-        ]
     }
 
     // stop spin.js loader

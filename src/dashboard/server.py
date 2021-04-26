@@ -26,7 +26,6 @@ def getFilterSubstring(params):
 
 @ app.route('/get-posts')
 def get_data():
-    return 'hello', 200
     #thisState = request.args.get('reqState')
 
     cur = conn.cursor()
@@ -70,7 +69,6 @@ def _json_response(data):
 
 @ app.route('/get-stats')
 def get_stats():
-    return 'hello', 200
     # # stale request handler
     # global reqState
     # thisState = int(request.args.get('reqState'))
@@ -99,7 +97,6 @@ def get_stats():
 
 @ app.route('/get-date-histogram')
 def get_date_histogram():
-    return 'hello', 200
     # # stale request handler
     # global reqState
     # thisState = int(request.args.get('reqState'))
@@ -140,7 +137,6 @@ def get_date_histogram():
 
 @ app.route('/get-word-distribution')
 def get_word_distribution():
-    return 'hello', 200
     # # stale request handler
     # global reqState
     # thisState = int(request.args.get('reqState'))
@@ -179,4 +175,5 @@ if __name__ == "__main__":
         print(e)
         print("Unable to connect to the database!")
 
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    flask_host = 'localhost' if 'localhost' in sys.argv else '0.0.0.0'
+    app.run(host=flask_host, debug=True, port=5000)
