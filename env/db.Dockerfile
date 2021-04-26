@@ -9,7 +9,8 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/12/main/pg_hba.co
     && echo "host  all  cmsc828d  ::1/0  trust" >> /etc/postgresql/12/main/pg_hba.conf \
     && sed -i -e 's/md5/trust/g' /etc/postgresql/12/main/pg_hba.conf \
     && sed -i -e 's/peer/trust/g' /etc/postgresql/12/main/pg_hba.conf \
-    && echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
+    && echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf \
+    && echo "dynamic_shared_memory_type=posix" >> /etc/postgresql/12/main/postgresql.conf
 
 # Run the rest of the commands as the `postgres` user
 USER postgres
@@ -29,6 +30,7 @@ EXPOSE 5432
 
 # Create a PostgreSQL role named `docker` with `docker` as the password
 # and then create a database `docker` owned by the ``docker` role.
-CMD /etc/init.d/postgresql start && \
-    psql -U postgres -d smscraper
+CMD /usr/lib/postgresql/12/bin/postgres \
+    -D /var/lib/postgresql/12/main \
+    -c config_file=/etc/postgresql/12/main/postgresql.conf
     
