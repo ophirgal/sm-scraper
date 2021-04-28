@@ -74,7 +74,7 @@ class Scraper:
         )
         return response.json()
 
-    def scrape(self, freq=1, limit=10, subreddits=['police', 'SocialJusticeInAction', 'Bad_Cop_No_Donut', 'BLM']):
+    def scrape(self, freq=1, limit=100000, subreddits=['police', 'SocialJusticeInAction', 'Bad_Cop_No_Donut', 'BLM']):
         connection  = self.getConnection()
         cursor = connection.cursor()
         SQL_Query = ''' CREATE TABLE IF NOT EXISTS scraped_data(
@@ -163,14 +163,18 @@ class Scraper:
                 connection.commit()
 
             relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
-
+            author_id = None
+            if (post.author is not None):
+                author_id = post.author.id
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
-            ,title_lemmatized,post.selftext,body_lemmatized,post.author.id,post.url,len(post.comments.list())]
+            ,title_lemmatized,post.selftext,body_lemmatized,author_id,post.url,len(post.comments.list())]
+            cursor.execute(
+                    '''DELETE FROM scraped_data WHERE id = %s''', [str(post.id)]
+                )
+            connection.commit()
             cursor.execute(
                     '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s,
-                    %s, %s, %s,%s, %s,%s,%s) ON CONFLICT (id) DO \
-                    UPDATE SET time_scraped = EXCLUDED.time_scraped, \
-                    comment_count = EXCLUDED.comment_count''',
+                    %s, %s, %s,%s, %s,%s,%s)''',
                     row)
             connection.commit()
 
@@ -182,7 +186,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     host_os = args.host_os
     nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
-    db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
+    db_host = 'localhost' if host_os == 'linux' else '0.0.0.0'
 
     scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host)
     scrapeObj.scrape()
