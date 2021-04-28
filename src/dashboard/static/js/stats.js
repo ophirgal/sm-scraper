@@ -22,13 +22,13 @@ async function render_stats(filters) {
     <div class="inline left"><strong>Posts selected:</strong></div>
     <div class="inline right">${d3.format("~s")(stats.posts_selected)}</div>`
     document.querySelector('#stat2').innerHTML = `
-        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline left"><strong>Users selected:</strong></div>
         <div class="inline right">${d3.format("~s")(stats.users_selected)}</div>`
     document.querySelector('#stat3').innerHTML = `
-        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline left"><strong>Posts scraped:</strong></div>
         <div class="inline right">${d3.format("~s")(stats.posts_scraped)}</div>`
     document.querySelector('#stat4').innerHTML = `
-        <div class="inline left"><strong>Posts selected:</strong></div>
+        <div class="inline left"><strong>Posts relevant:</strong></div>
         <div class="inline right">${d3.format("~s")(stats.posts_relevant)}</div>`
 }
 
