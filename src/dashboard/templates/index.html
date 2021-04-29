@@ -104,11 +104,15 @@
             </div>
             <div class="right inline pr-1">
                 Sort by:
-              <select name="sort-posts-metric" id="sort-posts-metric" onchange="renderPostList()">
+              <select name="sort-posts-metric" id="sort-posts-metric" onchange="render_post_list(getFilters())">
                 <option value="relevance">Relevance</option>
                 <option value="date">Date</option>
                 <option value="rating">Rating</option>
                 <option value="comments">Comments</option>
+              </select>
+              <select name="sort-posts-order" id="sort-posts-order" onchange="render_post_list(getFilters())">
+                <option value="relevance">Ascending</option>
+                <option value="date" selected>Descending</option>
               </select>
             </div>
           </div>
@@ -197,12 +201,12 @@
     filters = {}
   ) {
     filters = getFilters();
-    console.log(filters);
+    //console.log(filters);
     console.log("Rendering all");
     if (stats) render_stats(filters)
     if (times_vis) render_times_vis(filters)
     if (words_vis) render_words_vis(filters)
-    if (postlist) renderPostList(filters)
+    if (postlist) render_post_list(filters)
   }
 
   // event listeners

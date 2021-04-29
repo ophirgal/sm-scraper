@@ -1,4 +1,5 @@
-async function renderPostList(filters) {
+async function render_post_list(filters) {
+    console.log("filters", filters);
     // fetch stats data from server
     let url = new URL("http://localhost:5000/get-posts"),
         params = filters
@@ -81,7 +82,8 @@ async function renderPostList(filters) {
     
     // sorting
     var sortMetric = document.getElementById("sort-posts-metric").value;
-    var sortedPostList = sortPosts(postList, sortMetric);
+    var sortOrder = document.getElementById("sort-posts-order").value;
+    var sortedPostList = sortPosts(postList, sortMetric, sortOrder);
 
     var listNode = document.getElementById("postlist");
     clearNode(listNode);
@@ -92,14 +94,16 @@ async function renderPostList(filters) {
     });
 }
 
-function sortPosts(postList, sortMetric) {
+function sortPosts(postList, sortMetric, sortOrder) {
+  var orderModifier = 1;
+  if (sortOrder == "ascending") orderModifier = -1;
   switch (sortMetric) {
     case "relevance":
       postList.sort((p1, p2) => {
         var v1 = parseInt(p1.relevance_score);
         var v2 = parseInt(p2.relevance_score);
-        if (v1 > v2) return -1;
-        if (v1 < v2) return 1;
+        if (v1 > v2) return -1 * orderModifier;
+        if (v1 < v2) return 1 * orderModifier;
         return 0;
       });
       break;
@@ -107,8 +111,8 @@ function sortPosts(postList, sortMetric) {
       postList.sort((p1, p2) => {
         var v1 = Date.parse(p1.time_posted);
         var v2 = Date.parse(p2.time_posted);
-        if (v1 > v2) return -1;
-        if (v1 < v2) return 1;
+        if (v1 > v2) return -1 * orderModifier;
+        if (v1 < v2) return 1 * orderModifier;
         return 0;
       });
       break;
@@ -116,8 +120,8 @@ function sortPosts(postList, sortMetric) {
       postList.sort((p1, p2) => {
         var v1 = parseInt(p1.rating);
         var v2 = parseInt(p2.rating);
-        if (v1 > v2) return -1;
-        if (v1 < v2) return 1;
+        if (v1 > v2) return -1 * orderModifier;
+        if (v1 < v2) return 1 * orderModifier;
         return 0;
       });
       break;
@@ -125,8 +129,8 @@ function sortPosts(postList, sortMetric) {
       postList.sort((p1, p2) => {
         var v1 = parseInt(p1.comment_count);
         var v2 = parseInt(p2.comment_count);
-        if (v1 > v2) return -1;
-        if (v1 < v2) return 1;
+        if (v1 > v2) return -1 * orderModifier;
+        if (v1 < v2) return 1 * orderModifier;
         return 0;
       });
       break;
