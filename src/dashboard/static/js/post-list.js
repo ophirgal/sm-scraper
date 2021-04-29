@@ -7,17 +7,23 @@ async function render_post_list(filters) {
 
     let posts = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
+        .catch(function (err) {
+          console.warn('Error fetching posts');
+        });
 
-    postList = posts.postList;
-    for (var i = 0; i < postList.length; i++) {
-      post = postList[i];
-      if (post.body.length > 400) {
-        post.body = post.body.substring(0,400) + " ...";
+    if (posts != null) {
+      postList = posts.postList;
+      for (var i = 0; i < postList.length; i++) {
+        post = postList[i];
+        if (post.body.length > 400) {
+          post.body = post.body.substring(0,400) + " ...";
+        }
+        postList[i] = post;
       }
-      postList[i] = post;
     }
 
     /////////////////// FOR TESTING WHEN NO DATA
+    console.log(postList.length);
     if (postList.length == 0) { // for testing without data!
       var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
       postList = [
@@ -84,7 +90,7 @@ async function render_post_list(filters) {
     var sortMetric = document.getElementById("sort-posts-metric").value;
     var sortOrder = document.getElementById("sort-posts-order").value;
     var sortedPostList = sortPosts(postList, sortMetric, sortOrder);
-
+    
     var listNode = document.getElementById("postlist");
     clearNode(listNode);
     
@@ -96,7 +102,7 @@ async function render_post_list(filters) {
 
 function sortPosts(postList, sortMetric, sortOrder) {
   var orderModifier = 1;
-  if (sortOrder == "ascending") orderModifier = -1;
+  if (sortOrder == "asc") orderModifier = -1;
   switch (sortMetric) {
     case "relevance":
       postList.sort((p1, p2) => {
