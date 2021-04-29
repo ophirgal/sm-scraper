@@ -181,26 +181,37 @@
   /* sources is a list of unlemmatized source (subreddit) strings */
   var sources = [];
 
-  function getFilters() {
+  async function getFilters() {
+    let url = new URL("http://localhost:9001/get-lemma"),
+    params = {text: keywords}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    let keywordsLemma = await fetch(url, { "credentials": "same-origin" })
+    .then(response => response.json())
+    .catch(function (err) {
+      console.warn('Error calling NLP lemma');
+    });
+    keywordsLemma = keywordsLemma.filter(e => e !== ',');;
+    //console.log("lemma: ", keywordsLemma);
+    
     let a = [{year: 'numeric'},{month: 'numeric'},{day: 'numeric'}];
     return {
       dateMin: join(dateRange.min, a, '-'),
       dateMax: join(dateRange.max, a, '-'),
-      keywords: keywords,
+      keywords: keywordsLemma,
       jurisdictions: jurisdictions,
       sources: sources
     }
   }
 
   // Render all visualizations (the function needs to have global scope)
-  function renderAll(
+  async function renderAll(
     stats = true,
     times_vis = true,
     words_vis = true,
     postlist = true,
     filters = {}
   ) {
-    filters = getFilters();
+    filters = await getFilters();
     //console.log(filters);
     console.log("Rendering all");
     if (stats) render_stats(filters)
@@ -230,18 +241,18 @@
 
   function init() {
     // presupply default filter settings
-    dateRangeSetting = "1W";
+    dateRangeSetting = "All";
     updateDateRangeButtons();
     updateDateRangePickers();
-    jurisdictions.push("Washington, DC", "Baltimore, MD", "Louisville, KY");
-    sources.push("police", "policebrutality");
+    //jurisdictions.push("Washington, DC", "Baltimore, MD", "Louisville, KY");
+    //sources.push("police", "policebrutality");
     updateAllPills();
   }
 
 
   // initialize and renderAll
   init();
-  renderAll();
+  renderAll().then();
   
 </script>
 </body>

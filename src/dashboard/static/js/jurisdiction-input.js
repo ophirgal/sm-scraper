@@ -9,6 +9,7 @@ function addJurisdictions(e) {
 function removeJurisdiction(s) {
     jurisdictions = jurisdictions.filter(e => e !== s);
     updateJurisdictionPills();
+    renderAll();
 }
 
 function updateJurisdictionPills() {

@@ -9,6 +9,7 @@ function addSources(e) {
 function removeSource(s) {
     sources = sources.filter(e => e !== s);
     updateSourcePills();
+    renderAll();
 }
 
 function updateSourcePills() {

@@ -1,5 +1,4 @@
 async function render_post_list(filters) {
-    console.log("filters", filters);
     // fetch stats data from server
     let url = new URL("http://localhost:5000/get-posts"),
         params = filters
@@ -24,7 +23,7 @@ async function render_post_list(filters) {
 
     /////////////////// FOR TESTING WHEN NO DATA
     console.log(postList.length);
-    if (postList.length == 0) { // for testing without data!
+    if (false && postList.length == 0) { // for testing without data!
       var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
       postList = [
         {
@@ -95,9 +94,14 @@ async function render_post_list(filters) {
     clearNode(listNode);
     
     // build list item and append for each post
-    sortedPostList.forEach(post => {
-      listNode.appendChild(buildPostCard(post));
-    });
+    if (postList.length == 0) {
+      listNode.appendChild(buildEmptyListMessage());
+    }
+    else {
+      sortedPostList.forEach(post => {
+        listNode.appendChild(buildPostCard(post));
+      });
+    }
 }
 
 function sortPosts(postList, sortMetric, sortOrder) {
@@ -143,6 +147,16 @@ function sortPosts(postList, sortMetric, sortOrder) {
   }
 
   return postList;
+}
+
+function buildEmptyListMessage() {
+  var node = document.createElement("div"); 
+  node.classList.add("mb-2", "p-2", "rounded", "shadow-1-strong", "bg-white");
+
+  var text = document.createTextNode("No posts found! Try expanding the search filters.");
+  node.appendChild(text);  
+
+  return node;
 }
 
 function buildPostCard(post) {

@@ -21,8 +21,82 @@ def main(argv):
 def render_page():
     return render_template("index.html")
 
-def getFilterSubstring(params):
-    return "WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}'".format(params.get('dateMin'), params.get('dateMax'))
+def get_query(fields, params):
+    def list_to_sqllist(list):
+        string = "("
+        for word in list:
+            string += "'" + word.strip() + "',"
+        string = string[:-1] + ")"
+        return string
+
+    # prepare optional sources string
+    source_query = ""
+    if params.get('sources') != "":
+        # select only source matches
+        sources = params.get('sources').split(",")
+        source_list_string = list_to_sqllist(sources)
+        source_query = "AND scraped_data.subplatform in {}".format(source_list_string)
+
+    if params.get('keywords') == "" and params.get('jurisdictions') == "":
+        # maybe select all posts
+        query = """
+            SELECT {} FROM scraped_data 
+            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
+            """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
+    else:
+        # filter on keywords and/or jurisdictions
+        keywords = params.get('keywords').split(",")
+        jurisdictions = params.get('jurisdictions').split(",")
+        keyword_list_string = list_to_sqllist(keywords)
+        jurisdiction_list_string = list_to_sqllist(jurisdictions)
+
+        select_query = """
+                SELECT {} FROM scraped_data 
+                INNER JOIN filtered_ids ON scraped_data.id = filtered_ids.id
+                WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
+                """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
+
+        if len(params.get('keywords')) == 0:
+            # select only jurisdiction matches + sources (if applicable)
+            query = """
+                WITH 
+                filtered_ids (id) AS 
+                (SELECT DISTINCT id 
+                FROM entities 
+                WHERE type = 'LOC' AND entity in {})
+                {}
+                """.format(jurisdiction_list_string, select_query)
+        elif len(params.get('jurisdictions')) == 0:
+            # select only keyword matches + sources (if applicable)
+            query = """
+                WITH 
+                filtered_ids (id) AS 
+                (SELECT DISTINCT id 
+                FROM key_words 
+                WHERE key_word in {})
+                {}
+                """.format(keyword_list_string, select_query)
+        else:
+            # select only keyword && jurisdiction matches + sources (if applicable)
+            query = """
+                WITH 
+                ids_from_keywords (id) AS 
+                (SELECT DISTINCT id 
+                FROM key_words 
+                WHERE key_word in {}),
+
+                ids_from_jurisdictions (id) AS 
+                (SELECT DISTINCT id 
+                FROM entities 
+                WHERE type = 'LOC' AND entity in {}),
+
+                filtered_ids (id) AS
+                (SELECT DISTINCT ids_from_keywords.id 
+                FROM ids_from_keywords 
+                INNER JOIN ids_from_jurisdictions ON ids_from_keywords.id = ids_from_jurisdictions.id)
+                {}
+                """.format(keyword_list_string, jurisdiction_list_string, select_query)
+    return query
 
 @ app.route('/get-posts')
 def get_data():
@@ -31,7 +105,9 @@ def get_data():
     cur = conn.cursor()
 
     # get posts
-    query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
+    #query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
+    query = get_query("*", request.args) + ';'
+    print(query)
     cur.execute(query)
     res = cur.fetchall()
 

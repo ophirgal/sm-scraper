@@ -9,6 +9,7 @@ function addKeywords(e) {
 function removeKeyword(s) {
     keywords = keywords.filter(e => e !== s);
     updateKeywordPills();
+    renderAll();
 }
 
 function updateKeywordPills() {
