@@ -10,7 +10,7 @@ RUN echo "host  all  all  0.0.0.0/0  trust" >> /etc/postgresql/12/main/pg_hba.co
     && sed -i -e 's/md5/trust/g' /etc/postgresql/12/main/pg_hba.conf \
     && sed -i -e 's/peer/trust/g' /etc/postgresql/12/main/pg_hba.conf \
     && echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf \
-    && echo "dynamic_shared_memory_type=sysv" >> /etc/postgresql/12/main/postgresql.conf
+    && echo "dynamic_shared_memory_type=posix" >> /etc/postgresql/12/main/postgresql.conf
 
 # Run the rest of the commands as the `postgres` user
 USER postgres

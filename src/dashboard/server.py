@@ -106,7 +106,7 @@ def get_data():
 
     # get posts
     #query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
-    query = get_query("*", request.args) + ';'
+    query = get_query("*", request.args)
     print(query)
     cur.execute(query)
     res = cur.fetchall()
