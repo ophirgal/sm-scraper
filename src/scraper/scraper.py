@@ -164,7 +164,7 @@ class Scraper:
 
             relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
             author_id = None
-            if (post.author is not None):
+            if (hasattr(post, 'author') and post.author is not None and hasattr(post.author, 'id') and post.author.id is not None):
                 author_id = post.author.id
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
             ,title_lemmatized,post.selftext,body_lemmatized,author_id,post.url,len(post.comments.list())]
