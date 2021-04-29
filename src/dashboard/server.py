@@ -41,7 +41,7 @@ def get_query(fields, params):
         # maybe select all posts
         query = """
             SELECT {} FROM scraped_data 
-            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
+            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {};
             """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
     else:
         # filter on keywords and/or jurisdictions
@@ -51,9 +51,9 @@ def get_query(fields, params):
         jurisdiction_list_string = list_to_sqllist(jurisdictions)
 
         select_query = """
-                SELECT {} FROM scraped_data 
-                INNER JOIN filtered_ids ON scraped_data.id = filtered_ids.id
-                WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
+            SELECT {} FROM scraped_data 
+            INNER JOIN filtered_ids ON scraped_data.id = filtered_ids.id
+            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
                 """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
 
         if len(params.get('keywords')) == 0:
@@ -64,7 +64,7 @@ def get_query(fields, params):
                 (SELECT DISTINCT id 
                 FROM entities 
                 WHERE type = 'LOC' AND entity in {})
-                {}
+                {};
                 """.format(jurisdiction_list_string, select_query)
         elif len(params.get('jurisdictions')) == 0:
             # select only keyword matches + sources (if applicable)
@@ -74,7 +74,7 @@ def get_query(fields, params):
                 (SELECT DISTINCT id 
                 FROM key_words 
                 WHERE key_word in {})
-                {}
+                {};
                 """.format(keyword_list_string, select_query)
         else:
             # select only keyword && jurisdiction matches + sources (if applicable)
@@ -94,7 +94,7 @@ def get_query(fields, params):
                 (SELECT DISTINCT ids_from_keywords.id 
                 FROM ids_from_keywords 
                 INNER JOIN ids_from_jurisdictions ON ids_from_keywords.id = ids_from_jurisdictions.id)
-                {}
+                {};
                 """.format(keyword_list_string, jurisdiction_list_string, select_query)
     return query
 
