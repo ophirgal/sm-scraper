@@ -42,7 +42,7 @@ db_docker:
 db_windows_shell: db_docker_windows
 	docker run \
 		--rm \
-		--name db \
+		--name db_shell \
 		--net smscraper-net \
 		--ip 172.28.0.9 \
 		-w '/workdir' \

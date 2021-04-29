@@ -186,7 +186,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     host_os = args.host_os
     nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
-    db_host = 'localhost' if host_os == 'linux' else '0.0.0.0'
+    db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
 
     scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host)
     scrapeObj.scrape()
