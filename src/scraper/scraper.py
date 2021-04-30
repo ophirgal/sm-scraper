@@ -158,7 +158,7 @@ class Scraper:
                 )
             connection.commit()
             for key, value in entities_dict.items():
-                row = [post.id, key[0], key[1], value]
+                row = [post.id, key[0].lower(), key[1], value]
                 cursor.execute(
                     '''INSERT INTO entities VALUES (%s, %s, %s, %s)''', row
                 )
