@@ -63,7 +63,7 @@ def get_query(fields, params):
                 filtered_ids (id) AS 
                 (SELECT DISTINCT id 
                 FROM entities 
-                WHERE type = 'LOC' AND entity in {})
+                WHERE type = 'GPE' AND entity in {})
                 {};
                 """.format(jurisdiction_list_string, select_query)
         elif len(params.get('jurisdictions')) == 0:
