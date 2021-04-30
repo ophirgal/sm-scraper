@@ -163,11 +163,11 @@ class Scraper:
                 connection.commit()
 
             relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
-            author_id = None
-            if (hasattr(post, 'author') and post.author is not None and hasattr(post.author, 'id') and post.author.id is not None):
-                author_id = post.author.id
+            author_name = 'Anonymous'
+            if (hasattr(post, 'author') and post.author is not None and hasattr(post.author, 'name') and post.author.name is not None):
+                author_name = post.author.name
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
-            ,title_lemmatized,post.selftext,body_lemmatized,author_id,post.url,len(post.comments.list())]
+            ,title_lemmatized,post.selftext,body_lemmatized,author_name,post.url,len(post.comments.list())]
             cursor.execute(
                     '''DELETE FROM scraped_data WHERE id = %s''', [str(post.id)]
                 )
