@@ -130,10 +130,10 @@ class Scraper:
         if relevenace_score_title['relevant'] or relevenace_score_body['relevant']:
             # Get lemmatized title and body
             title_lemmatized =  self.getLemmatized(post.title)
-            title_lemmatized = map(lambda x: x.lower(), title_lemmatized)
+            title_lemmatized = list(map(lambda x: x.lower(), title_lemmatized))
             title_lemmatized = " ".join(title_lemmatized)
             body_lemmatized = self.getLemmatized(post.selftext)
-            body_lemmatized = map(lambda x: x.lower(), body_lemmatized)
+            body_lemmatized = list(map(lambda x: x.lower(), body_lemmatized))
             key_words = collections.Counter(body_lemmatized)
             cursor.execute(
                     '''DELETE FROM key_words WHERE id = %s''', [str(post.id)]
