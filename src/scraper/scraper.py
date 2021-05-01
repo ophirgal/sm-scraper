@@ -149,16 +149,16 @@ class Scraper:
             entities = self.get_entities(post.selftext)
             entities_dict = {}
             for entity in entities:
-                if (entity[0], entity[2]) in entities_dict:
-                    entities_dict[(entity[0], entity[2])] += 1
+                if (entity[0].lower(), entity[2]) in entities_dict:
+                    entities_dict[(entity[0].lower(), entity[2])] += 1
                 else:
-                    entities_dict[(entity[0], entity[2])] = 1
+                    entities_dict[(entity[0].lower(), entity[2])] = 1
             cursor.execute(
                     '''DELETE FROM entities WHERE id = %s''', [str(post.id)]
                 )
             connection.commit()
             for key, value in entities_dict.items():
-                row = [post.id, key[0].lower(), key[1], value]
+                row = [post.id, key[0], key[1], value]
                 cursor.execute(
                     '''INSERT INTO entities VALUES (%s, %s, %s, %s)''', row
                 )
