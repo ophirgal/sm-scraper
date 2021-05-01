@@ -239,11 +239,12 @@ def get_word_distribution():
 
 
     cur = conn.cursor()
-    filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
+    filtered_posts = get_query("scraped_data.id", request.args)[::-1].replace(';','',1)[::-1]
     # get total posts relevant
     query = f' \
+        with s(id) as ({filtered_posts}) \
         select key_word, sum(count) as count from key_words k \
-        inner join ({filtered_posts}) s on s.id = k.id \
+        inner join s on s.id = k.id \
         group by key_word \
         order by count;'
     cur.execute(query)
