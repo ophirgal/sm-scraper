@@ -31,7 +31,7 @@ def get_query(fields, params):
 
     # prepare optional sources string
     source_query = ""
-    if params.get('sources') != "":
+    if params.get('sources') and params.get('sources') != "":
         # select only source matches
         sources = params.get('sources').split(",")
         source_list_string = list_to_sqllist(sources)
@@ -41,7 +41,7 @@ def get_query(fields, params):
         # maybe select all posts
         query = """
             SELECT {} FROM scraped_data 
-            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {};
+            WHERE time_posted >= '{}' AND time_posted <= '{}' {};
             """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
     else:
         # filter on keywords and/or jurisdictions
@@ -53,7 +53,7 @@ def get_query(fields, params):
         select_query = """
             SELECT {} FROM scraped_data 
             INNER JOIN filtered_ids ON scraped_data.id = filtered_ids.id
-            WHERE \"time_posted\" >= '{}' AND \"time_posted\" <= '{}' {}
+            WHERE time_posted >= '{}' AND time_posted <= '{}' {}
                 """.format(fields, params.get('dateMin'), params.get('dateMax'), source_query)
 
         if len(params.get('keywords')) == 0:
@@ -99,7 +99,7 @@ def get_query(fields, params):
     return query
 
 @ app.route('/get-posts')
-def get_data():
+def get_posts():
     #thisState = request.args.get('reqState')
 
     cur = conn.cursor()
@@ -107,7 +107,7 @@ def get_data():
     # get posts
     #query = f'select * from scraped_data ' + getFilterSubstring(request.args) + ';'
     query = get_query("*", request.args)
-    print(query)
+    # print(query)
     cur.execute(query)
     res = cur.fetchall()
 
@@ -153,21 +153,37 @@ def get_stats():
     #     return
 
     cur = conn.cursor()
-    relevance_threshold = 3
+    relevance_threshold = 3  # TODO: change this? (arbitrary threshold)
+    filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
 
+    # get total posts selected
+    query = f'select count(*) from ({filtered_posts}) x;'
+    cur.execute(query)
+    posts_selected = int(cur.fetchone()[0])
+    
+    # get total users selected
+    query = f'select count(distinct(author)) from \
+        ({filtered_posts}) x;'
+    cur.execute(query)
+    users_selected = int(cur.fetchone()[0])
+    
     # get total posts scraped
     query = f'select count(*) from scraped_data;'
     cur.execute(query)
     posts_scraped = int(cur.fetchone()[0])
 
     # get total posts relevant
-    query = f'select count(*) from scraped_data \
+    query = f'select count(*) from ({filtered_posts}) x \
         where cast(relevance_score as int) >= {relevance_threshold};'
     cur.execute(query)
     posts_relevant = int(cur.fetchone()[0])
 
-    data = {'posts_scraped': posts_scraped,
-            'posts_relevant': posts_relevant}
+    data = {
+        'posts_selected': posts_selected,
+        'users_selected': users_selected,
+        'posts_scraped': posts_scraped,
+        'posts_relevant': posts_relevant
+    }
     return _json_response(data)
 
 
@@ -183,6 +199,7 @@ def get_date_histogram():
     min_date = request.args.get('minDate')
     max_date = request.args.get('maxDate')
     total_bins = request.args.get('totalBins')
+    filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
 
     # assuming client-side validation of inputs
 
@@ -202,7 +219,7 @@ def get_date_histogram():
             sum(case when (time_posted::timestamp >= {casted_min_date} and \
                 time_posted::timestamp <= {casted_max_date}) then 1 else 0 end) \
                      as cnt \
-            from scraped_data \
+            from ({filtered_posts}) y \
             group by bucket \
             order by bucket) x;'
     cur.execute(query)
@@ -222,6 +239,16 @@ def get_word_distribution():
 
 
     cur = conn.cursor()
+    filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
+    # get total posts relevant
+    query = f' \
+        select key_word, sum(count) as count from key_words k \
+        inner join ({filtered_posts}) s on s.id = k.id \
+        group by key_word \
+        order by count;'
+    cur.execute(query)
+    data = [{'word': str(d[0]), 'count': int(d[1])}
+            for d in cur.fetchall()]
    
     return _json_response(data)
 

@@ -3,64 +3,31 @@
  */
 async function render_words_vis(filters = {}) {
 
-    let selected_flag = document.querySelector('#vis-selected-btn')
-        .classList.contains('btn-primary')
+    // remove existing svg (if any)
+    d3.selectAll("#words-vis > svg").remove()
+
+    // trigger spinner
+    spinner_opts.top = d_select('#words-vis').offsetHeight / 2 + 'px'
+    let spinner = new Spinner(spinner_opts).spin(d_select('#words-vis'))
+    
+    // fetch data from server
+    let url = new URL('/get-word-distribution', window.location.origin)
+    let params = filters
+    
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    let data = await fetch(url, { "credentials": "same-origin" })
+    .then(response => response.json())
+
+    // stop spin.js loader
+    spinner.stop()
 
     // set the dimensions and margins of the graph
     let margin = { top: 30, right: 60, bottom: 10, left: 60 }
     let width = document.querySelector('#words-vis').offsetWidth
         - margin.left - margin.right
-    let height = document.querySelector('#words-vis').offsetHeight
-        - margin.top - margin.bottom
-
-    // remove existing svg (if any)
-    d3.selectAll("#words-vis > svg").remove()
-
-    // trigger spinner
-    /* opts.top = '50px'
-    var spinner = new Spinner(opts).spin(document.querySelector('#words-vis')) */
-
-    // fetch data from server
-    /* let data = await fetch('http://localhost:8000/get-years-data?'
-        + (filters.xKey ? (`xKey=${filters.xKey}&yKey=${filters.yKey}`
-            + `&minX=${filters.minX}&minY=${filters.minY}`
-            + `&maxX=${filters.maxX}&maxY=${filters.maxY}`) : ''),
-        { "credentials": "same-origin" })
-        .then(response => response.json()) */
-    // use dummy data for now
-    let data = [{
-        "name": "Apples",
-        "value": 10,
-    },
-    {
-        "name": "Bananas",
-        "value": 12,
-    },
-    {
-        "name": "Grapes",
-        "value": 19,
-    },
-    {
-        "name": "Lemons",
-        "value": 25,
-    },
-    {
-        "name": "Limes",
-        "value": 36,
-    },
-    {
-        "name": "Oranges",
-        "value": 43,
-    },
-    {
-        "name": "Pears",
-        "value": 50,
-    }]
-
-    // stop spin.js loader
-    //  spinner.stop();
-
-    // append the svg object to the relevant div
+    let height = data.length * 15
+ 
+    // append a new svg element to the relevant div
     var svg = d3.select("#words-vis")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -71,15 +38,17 @@ async function render_words_vis(filters = {}) {
     // add axes
     var x = d3.scaleLinear()
         .range([0, width])
-        .domain([0, d3.max(data, d => d.value)])
+        .domain([0, d3.max(data, d => d.count)])
 
     let y = d3.scaleBand()
-        .domain(data.map(d => d.name))
+        .domain(data.map(d => d.word))
         .range([height, 0])
 
     svg.append("g")
         .attr("class", "y axis")
-        .call(d3.axisLeft(y).ticks(0))
+        .call(d3.axisLeft(y)
+                .ticks(0)
+                .tickFormat(d => d.length > 10 ? (d.substr(0,8) + '...') : d))
 
     let bars = svg.selectAll(".bar")
         .data(data)
@@ -90,19 +59,20 @@ async function render_words_vis(filters = {}) {
     bars.append("rect")
         .attr("class", "bar")
         .attr('fill', '#69b3a2')
-        .attr("y", d => y(d.name))
-        .attr("height", y.bandwidth() * 0.9)
+        .attr("y", d => y(d.word))
+        .attr("height", y.bandwidth() * 0.85)
         .attr("x", 0)
-        .attr("width", d => x(d.value))
+        .attr("width", d => x(d.count))
 
     // add a value label to the right of each bar
     bars.append("text")
         .attr("class", "label")
         // y position of the label is halfway down the bar
-        .attr("y", d => y(d.name) + y.bandwidth() - 5)
+        .attr("y", d => y(d.word) + y.bandwidth() - 5)
         // x position is 3 pixels to the right of the bar
-        .attr("x", d => x(d.value) + 3)
-        .text(d => String(d.value).length > 3 ? d3.format("~s")(d.value) : d.value)
+        .attr("x", d => x(d.count) + 3)
+        .style("font-size", "12px")
+        .text(d => String(d.count).length > 3 ? d3.format("~s")(d.count) : d.count)
 
     // Add Vis Title
     svg.append("text")
@@ -112,5 +82,5 @@ async function render_words_vis(filters = {}) {
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
-        .text(`Distribution of Words in ${selected_flag ? 'Selected' : 'All'} Posts`)
+        .text(`Distribution of Words in Results`)
 }

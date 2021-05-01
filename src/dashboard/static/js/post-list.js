@@ -228,7 +228,7 @@ function buildContentLink(post) {
 
 function buildBody(post) { 
   var bodyContainer = document.createElement("div");
-  bodyContainer.classList.add("mb-1", "font-medium");
+  bodyContainer.classList.add("mb-1", "font-medium", "text-break");
   var textNode = document.createTextNode(post.body);
   bodyContainer.appendChild(textNode);  
   return bodyContainer;

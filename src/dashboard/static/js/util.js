@@ -1,4 +1,3 @@
-
 // clears existing list items
 function clearNode(node) {
     while (node.firstChild) {
@@ -47,4 +46,18 @@ function visBtnClicked(e) {
     otherBtn.classList.remove("btn-primary")
     otherBtn.classList.add("btn-gray")
     renderAll(false, true, true, false)
+}
+
+const d_select = document.querySelector.bind(document)
+
+ // spinner settings
+const spinner_opts = {
+    lines: 9, // The number of lines to draw
+    length: 9, // The length of each line
+    width: 5, // The line thickness
+    radius: 14, // The radius of the inner circle
+    color: '#007bff', // #rgb or #rrggbb or array of colors
+    speed: 1.9, // Rounds per second
+    trail: 40, // Afterglow percentage
+    position: 'relative'
 }

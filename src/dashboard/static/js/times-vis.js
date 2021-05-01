@@ -3,9 +3,6 @@
  */
 async function render_times_vis(filters = {}) {
 
-    let selected_flag = document.querySelector('#vis-selected-btn')
-        .classList.contains('btn-primary')
-
     // set the dimensions and margins of the graph
     let margin = { top: 35, right: 25, bottom: 20, left: 30 }
     let width = document.querySelector('#times-vis').offsetWidth
@@ -41,21 +38,23 @@ async function render_times_vis(filters = {}) {
     }
 
     // trigger spinner
-    /* opts.top = '50px'
-    var spinner = new Spinner(opts).spin(document.querySelector('#times-vis')) */
-
-    let url = new URL("http://localhost:5000/get-date-histogram"),
-        params = {
-            minDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.min),
-            maxDate: d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.max),
-            totalBins: 5,
-            selected_flag: selected_flag
-        }
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    spinner_opts.top = d_select('#times-vis').offsetHeight / 2 + 'px'
+    let spinner = new Spinner(spinner_opts).spin(d_select('#times-vis'))
 
     // fetch data from server
+    let url = new URL('/get-date-histogram', window.location.origin)
+    let params = filters
+    params.minDate = d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.min)
+    params.maxDate = d3.timeFormat('%Y-%m-%d %H:%M:%S')(dateRange.max)
+    params.totalBins = 5
+    
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
     let data = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
+
+    // stop spin.js loader
+    spinner.stop()
 
     data = d3.map(data, d => {
         return {
@@ -71,9 +70,6 @@ async function render_times_vis(filters = {}) {
         maxCount: d3.max(d3.map(data, d => d.count)),
         data: data
     }
-
-    // stop spin.js loader
-    //  spinner.stop();
 
     // append the svg object to the relevant div
     var svg = d3.select("#times-vis")
@@ -149,7 +145,7 @@ async function render_times_vis(filters = {}) {
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
-        .text(`Histogram of ${selected_flag ? 'Selected' : 'All'} Posts by Date`);
+        .text(`Histogram of Results by Date`);
 
     // remove old plots while still there
     while (d3.selectAll("#times-vis > svg")['_groups'][0].length > 1)
