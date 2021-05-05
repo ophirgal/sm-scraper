@@ -1,5 +1,5 @@
 function addJurisdictions(e) {
-    var jur = e.target.value.trim();
+    var jur = e.target.value.trim().toLowerCase();
     e.target.value = "";
     //jurisdictions = jurisdictions.concat(list).unique().noSpace();
     jurisdictions.push(jur);
