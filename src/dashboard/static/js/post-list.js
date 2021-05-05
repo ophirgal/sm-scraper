@@ -238,7 +238,7 @@ function buildBody(post) {
 function buildStats(post) { 
   var statsContainer = document.createElement("div");
   statsContainer.classList.add("mb-1", "font-medium");
-  var textNode = document.createTextNode(post.rating + "▲ • " + post.comment_count + " comments");
+  var textNode = document.createTextNode(post.comment_count + " comments");
   statsContainer.appendChild(textNode);  
   return statsContainer;
 }
