@@ -1,7 +1,10 @@
 function addSources(e) {
-    var list = e.target.value.trim().split(" ");
+    //var list = e.target.value.trim().split(" ");
+    var source = e.target.value.trim();
     e.target.value = "";
-    sources = sources.concat(list).unique().noSpace();
+    //sources = sources.concat(list).unique().noSpace();
+    sources.push(source);
+    sources = sources.unique().noSpace();
     updateSourcePills();
     renderAll();
 }

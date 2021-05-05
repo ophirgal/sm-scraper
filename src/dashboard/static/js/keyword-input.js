@@ -1,7 +1,10 @@
 function addKeywords(e) {
-    var list = e.target.value.trim().split(" ");
+    //var list = e.target.value.trim().split(" ");
+    var word = e.target.value.trim();
     e.target.value = "";
-    keywords = keywords.concat(list).unique().noSpace();
+    //keywords = keywords.concat(list).unique().noSpace();
+    keywords.push(word);
+    keywords = keywords.unique().noSpace();
     updateKeywordPills();
     renderAll();
 }

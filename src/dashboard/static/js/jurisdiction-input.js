@@ -1,7 +1,9 @@
 function addJurisdictions(e) {
-    var list = e.target.value.trim().split(" ");
+    var jur = e.target.value.trim();
     e.target.value = "";
-    jurisdictions = jurisdictions.concat(list).unique().noSpace();
+    //jurisdictions = jurisdictions.concat(list).unique().noSpace();
+    jurisdictions.push(jur);
+    jurisdictions = jurisdictions.unique().noSpace();
     updateJurisdictionPills();
     renderAll();
 }
