@@ -26,7 +26,7 @@ def get_query(fields, params):
             string += "'" + word.strip() + "',"
         string = string[:-1] + ")"
         return string
-
+    
     # prepare optional sources string
     source_query = ""
     if params.get('sources') and params.get('sources') != "":
@@ -86,7 +86,7 @@ def get_query(fields, params):
                 ids_from_jurisdictions (id) AS 
                 (SELECT DISTINCT id 
                 FROM entities 
-                WHERE type = 'LOC' AND entity in {}),
+                WHERE type = 'GPE' AND entity in {}),
 
                 filtered_ids (id) AS
                 (SELECT DISTINCT ids_from_keywords.id 
@@ -108,7 +108,7 @@ def get_posts():
     # print(query)
     cur.execute(query)
     res = cur.fetchall()
-    
+
     postList = []
     for p in res:
         postList.append({ 
