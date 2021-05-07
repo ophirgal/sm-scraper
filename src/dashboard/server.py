@@ -8,12 +8,10 @@ import psycopg2 as pg  # use this package to work with postgresql
 import argparse
 
 app = Flask(__name__)
-reqState = 0
 conn = None
 
 
 def main(argv):
-    global reqState
     global conn
 
 
@@ -110,7 +108,7 @@ def get_posts():
     # print(query)
     cur.execute(query)
     res = cur.fetchall()
-
+    
     postList = []
     for p in res:
         postList.append({ 
@@ -123,7 +121,7 @@ def get_posts():
             'body': p[8], 
             'author': p[10], 
             'post_url': p[11],
-            'linked_urls': "https://google.com",
+            'linked_urls': "",
             'comment_count': p[12],
             'rating': "-1"
         })
