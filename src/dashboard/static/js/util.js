@@ -38,16 +38,6 @@ Array.prototype.noSpace = function() {
     return n;
 };
 
-// handler for vis button clicks ('Select' vs. 'All')
-function visBtnClicked(e) { 
-    e.target.classList.remove("btn-gray")
-    e.target.classList.add("btn-primary") 
-    let otherBtn = document.getElementById(e.target.getAttribute('other_id'))
-    otherBtn.classList.remove("btn-primary")
-    otherBtn.classList.add("btn-gray")
-    renderAll(false, true, true, false)
-}
-
 const d_select = document.querySelector.bind(document)
 
  // spinner settings

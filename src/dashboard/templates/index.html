@@ -127,7 +127,17 @@
                 Visualizations
             </div>
             <div class="mt-0 p-2 rounded shadow-1-strong bg-white" style="height: 30vh;"> 
-                <div id="times-vis" class="h-100 w-100"></div>
+                <div id="times-vis" class="w-100" style="height: 85%"></div>
+                <div style="height: 15%" class="d-flex justify-content-center">
+                    <div class="inline">Resolution:&nbsp;</div>
+                    <div class="inline">
+                        <button id="hist-1D-btn" type="button" class="hist-btn btn btn-sm btn-light py-0 mb-1" onclick="histBtnClicked(event)">1D</button>
+                        <button id="hist-1W-btn" type="button" class="hist-btn btn btn-sm btn-light py-0 mb-1" onclick="histBtnClicked(event)">1W</button>
+                        <button id="hist-1M-btn" type="button" class="hist-btn btn btn-sm btn-light py-0 mb-1" onclick="histBtnClicked(event)">1M</button>
+                        <button id="hist-3M-btn" type="button" class="hist-btn btn btn-sm btn-primary py-0 mb-1" onclick="histBtnClicked(event)">3M</button>
+                        <button id="hist-1Y-btn" type="button" class="hist-btn btn btn-sm btn-light py-0 mb-1" onclick="histBtnClicked(event)">1Y</button>
+                    </div>
+                </div>
             </div>
             <div style="height: 3vh;">
             </div>
@@ -206,8 +216,7 @@
     stats = true,
     times_vis = true,
     words_vis = true,
-    postlist = true,
-    filters = {}
+    postlist = true
   ) {
     filters = await getFilters();
     //console.log(filters);

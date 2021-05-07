@@ -173,7 +173,7 @@ def get_stats():
     posts_scraped = int(cur.fetchone()[0])
 
     # get total posts relevant
-    query = f'select count(*) from ({filtered_posts}) x \
+    query = f'select count(*) from scraped_data \
         where cast(relevance_score as int) >= {relevance_threshold};'
     cur.execute(query)
     posts_relevant = int(cur.fetchone()[0])
@@ -199,6 +199,14 @@ def get_date_histogram():
     min_date = request.args.get('minDate')
     max_date = request.args.get('maxDate')
     total_bins = request.args.get('totalBins')
+    resolution = request.args.get('resolution')
+    interval_dict = {
+        '1D':"('2000-01-02'::timestamp - '2000-01-01'::timestamp)",
+        '1W':"('2000-01-08'::timestamp - '2000-01-01'::timestamp)",
+        '1M':"('2000-02-01'::timestamp - '2000-01-01'::timestamp)",
+        '3M':"('2000-04-01'::timestamp - '2000-01-01'::timestamp)",
+        '1Y':"('2001-01-01'::timestamp - '2000-01-01'::timestamp)",
+    }
     filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
 
     # assuming client-side validation of inputs
@@ -206,7 +214,8 @@ def get_date_histogram():
     cur = conn.cursor()
     casted_min_date = f"'{min_date}'::timestamp"
     casted_max_date = f"'{max_date}'::timestamp"
-    bin_size = f'(({casted_max_date}-{casted_min_date}) / {total_bins})'
+    # bin_size = f'(({casted_max_date}-{casted_min_date}) / {total_bins})'
+    bin_size = interval_dict[resolution]
     query = \
         f'select \
         ({casted_min_date} + (bucket-1) * {bin_size}) as bin_min, \

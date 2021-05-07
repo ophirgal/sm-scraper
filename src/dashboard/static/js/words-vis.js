@@ -3,8 +3,58 @@
  */
 async function render_words_vis(filters = {}) {
 
+    function remove_old_plots() {
+        // remove old plots while still there
+        while (d3.selectAll("#words-vis > svg")['_groups'][0].length > 1)
+            d3.select("#words-vis > svg").remove()
+    }
+
+    // set the dimensions and margins of the graph
+    let margin = { top: 30, right: 60, bottom: 10, left: 60 }
+    let width = d_select('#words-vis').offsetWidth - margin.left - margin.right
+    let height = d_select('#words-vis').offsetHeight - margin.top - margin.bottom
+
+    function displayNA() {
+        // append the svg object to the relevant div
+        var svg = d3.select("#words-vis")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr('fill', '#4f4f4f')
+            .attr("transform", `translate(${margin.left}, ${margin.top})`)
+        
+        // Add Vis Title
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", 0 - (margin.top / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-style", "italic")
+            .style("fill", "#505050")
+            .text(`Distribution of Words in Results`)
+    
+        // Add N/A text
+        svg.append("text")
+            .attr("x", (width / 2))
+            .attr("y", (height / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-style", "italic")
+            .style("fill", "#505050")
+            .text("N/A")
+
+            remove_old_plots()
+    }
+
     // remove existing svg (if any)
     d3.selectAll("#words-vis > svg").remove()
+
+    // if date inputs are invalid display "N/A"
+    if (new Date(dateRange.min) >= new Date(dateRange.max)) {
+        displayNA()
+        return
+    }
 
     // trigger spinner
     spinner_opts.top = d_select('#words-vis').offsetHeight / 2 + 'px'
@@ -21,11 +71,14 @@ async function render_words_vis(filters = {}) {
     // stop spin.js loader
     spinner.stop()
 
-    // set the dimensions and margins of the graph
-    let margin = { top: 30, right: 60, bottom: 10, left: 60 }
-    let width = document.querySelector('#words-vis').offsetWidth
-        - margin.left - margin.right
-    let height = data.length * 15
+    // if data is empty display "N/A"
+    if (data.length === 0) {
+        displayNA()
+        return
+    }
+
+    // modify height according to amount of words in data
+    height = data.length * 15
  
     // append a new svg element to the relevant div
     var svg = d3.select("#words-vis")
