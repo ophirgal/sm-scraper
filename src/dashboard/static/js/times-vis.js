@@ -234,5 +234,5 @@ function histBtnClicked(e) {
     let newBtn = e.target
     newBtn.classList.remove("btn-light")
     newBtn.classList.add("btn-primary")
-    renderAll(false, true, false, false, filters)
+    renderAll(false, true, false, false)
 }

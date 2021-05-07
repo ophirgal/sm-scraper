@@ -245,7 +245,7 @@ def get_word_distribution():
     # if reqState != thisState:
     #     print("STALE REQ: ABORTING")
     #     return
-
+    word_type = request.args.get('type')
 
     cur = conn.cursor()
     filtered_posts = get_query("scraped_data.id", request.args)[::-1].replace(';','',1)[::-1]
@@ -255,7 +255,12 @@ def get_word_distribution():
         select key_word, sum(count) as count from key_words k \
         inner join s on s.id = k.id \
         group by key_word \
-        order by count;'
+        order by count;' if word_type == 'words' else \
+            f'with s(id) as ({filtered_posts}) \
+            select entity, sum(count) as count from entities e \
+            inner join s on s.id = e.id \
+            group by entity \
+            order by count;'
     cur.execute(query)
     data = [{'word': str(d[0]), 'count': int(d[1])}
             for d in cur.fetchall()]

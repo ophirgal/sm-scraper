@@ -63,6 +63,7 @@ async function render_words_vis(filters = {}) {
     // fetch data from server
     let url = new URL('/get-word-distribution', window.location.origin)
     let params = filters
+    params.type = d_select('.words-btn.btn-primary').innerText.toLowerCase()
     
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     let data = await fetch(url, { "credentials": "same-origin" })
@@ -135,5 +136,18 @@ async function render_words_vis(filters = {}) {
         .style("font-size", "16px")
         .style("font-style", "italic")
         .style("fill", "#505050")
-        .text(`Distribution of Words in Results`)
+        .text(`Distribution of ${d_select('.words-btn.btn-primary').innerText} in Results`)
+}
+
+// handler for resolution button clicks ('1D', '1M', ...)
+function wordsBtnClicked(e) {
+    // change old selection
+    let oldBtn = d_select('.words-btn.btn-primary')
+    oldBtn.classList.remove("btn-primary")
+    oldBtn.classList.add("btn-light")
+    // change new selection
+    let newBtn = e.target
+    newBtn.classList.remove("btn-light")
+    newBtn.classList.add("btn-primary")
+    renderAll(false, false, true, false)
 }
