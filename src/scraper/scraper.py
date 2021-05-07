@@ -168,6 +168,8 @@ class Scraper:
             author_name = 'Anonymous'
             if (hasattr(post, 'author') and post.author is not None and hasattr(post.author, 'name') and post.author.name is not None):
                 author_name = post.author.name
+            post.title = post.title.replace('\t',' ')
+            post.selftext = post.selftext.replace('\t',' ')
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
             ,title_lemmatized,post.selftext,body_lemmatized,author_name,post.url,len(post.comments.list())]
             cursor.execute(
