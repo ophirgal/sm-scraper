@@ -3,7 +3,6 @@ async function render_post_list(filters) {
     let url = new URL("http://localhost:5000/get-posts"),
         params = filters
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-
     let posts = await fetch(url, { "credentials": "same-origin" })
         .then(response => response.json())
         .catch(function (err) {
@@ -22,7 +21,7 @@ async function render_post_list(filters) {
     }
 
     /////////////////// FOR TESTING WHEN NO DATA
-    console.log(postList.length);
+    //console.log(postList.length);
     if (false && postList.length == 0) { // for testing without data!
       var sampleText = "Lorem ipsum dolor sit amet, convallis et risus id varius. Aliquam elit quam, hendrerit nec urna sit amet, iaculis pulvinar elit. Phasellus vel pharetra orci. Sed vel ante consequat nisl commodo scelerisque. Suspendisse feugiat magna ac metus aliquet rutrum.";
       postList = [

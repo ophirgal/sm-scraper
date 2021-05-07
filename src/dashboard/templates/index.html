@@ -197,21 +197,36 @@
   var sources = [];
 
   async function getFilters() {
-    let url = new URL("http://localhost:9001/get-lemma"),
-    params = {text: keywords}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    let keywordsLemma = await fetch(url, { "credentials": "same-origin" })
-    .then(response => response.json())
-    .catch(function (err) {
-      console.warn('Error calling NLP lemma');
-    });
-    keywordsLemma = keywordsLemma.filter(e => e !== ',');;
-    
+    let keywordsLemma = []
+    if (keywords.length > 0) {
+      let urlLemma = new URL("http://localhost:9001/get-lemma"),
+      paramsLemma = {text: keywords}
+      Object.keys(paramsLemma).forEach(key => urlLemma.searchParams.append(key, paramsLemma[key]))
+      keywordsLemma = await fetch(urlLemma, { "credentials": "same-origin" })
+      .then(response => response.json())
+      .catch(function (err) {
+        console.warn('Error calling NLP lemma');
+      });
+      keywordsLemma = keywordsLemma.filter(e => e !== ',');;
+    }
+
+    let jurisdictionsSA = []
+    if (jurisdictions.length > 0) {
+      let urlAbbreviation = new URL("http://localhost:9001/convert-state-abbreviation"),
+      paramsAbbreviation = {queries: JSON.stringify(jurisdictions)}
+      Object.keys(paramsAbbreviation).forEach(key => urlAbbreviation.searchParams.append(key, paramsAbbreviation[key]))
+      jurisdictionsSA = await fetch(urlAbbreviation, { "credentials": "same-origin" })
+      .then(response => response.json())
+      .catch(function (err) {
+        console.warn('Error calling NLP convert-state-abbreviation');
+      });
+    }
+
     return {
       dateMin: dateRange.min.toISOString(),
       dateMax: dateRange.max.toISOString(),
-      keywords: keywordsLemma,
-      jurisdictions: jurisdictions,
+      keywords: keywords.length > 0 ? keywordsLemma : keywords,
+      jurisdictions: jurisdictions.length > 0 ? jurisdictionsSA : jurisdictions,
       sources: sources
     }
   }
