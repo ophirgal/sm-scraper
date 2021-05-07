@@ -173,14 +173,11 @@ dashboard_docker_windows:
 
 .PHONY: nlp_jupyterlab nlp nlp_docker nlp_example
 .SILENT: nlp_jupyterlab nlp nlp_example
-nlp_jupyterlab: nlp_docker
+nlp_jupyterlab: nlp_jupyterlab_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--name nlp \
-		--net smscraper-net \
-		-p 9001:9001 \
-		--ip 172.28.0.2 \
+		--net=host \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -197,14 +194,14 @@ nlp_jupyterlab: nlp_docker
 			--notebook-dir / \
 			--ip localhost --port 8888 \
 			--allow-root --no-browser --ContentsManager.allow_hidden=True
+nlp_jupyterlab_docker: nlp_docker
+	sudo docker build -t ${PROJECT_NAME}:nlp_jupyterlab -f ./env/nlp_jupyterlab.Dockerfile ./env
 nlp_example: nlp_docker
 	sudo docker run \
 		--rm \
 		--ipc=host \
-		--name nlp \
-		--net smscraper-net \
-		-p 9001:9001 \
-		--ip 172.28.0.2 \
+		--name nlp-ex \
+		--net host \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -215,7 +212,9 @@ nlp_linux: nlp_docker
 		--rm \
 		--ipc=host \
 		--name nlp \
-		--net=host \
+		--net smscraper-net \
+		-p 9001:9001 \
+		--ip 172.28.0.2 \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
