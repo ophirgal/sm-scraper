@@ -40,6 +40,14 @@ response = requests.get(
 )
 print(response.json())
 
+# get state abbrevitaions
+response = requests.get(
+    url='http://localhost:9001/convert-state-abbreviation',
+    params={
+        'queries': json.dumps(['MiNneapolis', 'New York', 'CA']),
+    },
+)
+print(response.json())
 
 
 

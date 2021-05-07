@@ -3,7 +3,7 @@
 
 
 from src.nlp.util import * ; import src.nlp.util as util
-from src.nlp.pipeline import pipeline
+from src.nlp.pipeline import pipeline, state_dict
 from src.nlp.classifiers import classifiers
 
 import flask
@@ -48,6 +48,18 @@ def get_lemma():
     lemmas = [token.lemma_ for token in doc]
 
     resp = flask.Response(response=json.dumps(lemmas), status=200, mimetype='application/json')
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+@app.route('/convert-state-abbreviation')
+def convert_state_abbreviation():
+    text = flask.request.args.get('queries')
+    ans = [
+        q if q.lower() not in state_dict else state_dict[q.lower()]
+        for q in json.loads(text)
+    ]
+
+    resp = flask.Response(response=json.dumps(ans), status=200, mimetype='application/json')
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 

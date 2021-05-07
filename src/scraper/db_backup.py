@@ -24,17 +24,17 @@ def back_up(db_host, base_file_name):
     )
     cursor.execute(
         "COPY scraped_data FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_scraped_data.csv' DELIMITER ',' CSV HEADER;"
+         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_scraped_data.tsv';"
     )
     connection.commit()
     cursor.execute(
         "COPY key_words FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_key_words.csv' DELIMITER ',' CSV HEADER;"
+         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_key_words.tsv';"
     )
     connection.commit()
     cursor.execute(
         "COPY entities FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_entities.csv' DELIMITER ',' CSV HEADER;"
+         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_entities.tsv';"
     )
     connection.commit()
 

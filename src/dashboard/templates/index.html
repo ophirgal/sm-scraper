@@ -206,12 +206,10 @@
       console.warn('Error calling NLP lemma');
     });
     keywordsLemma = keywordsLemma.filter(e => e !== ',');;
-    //console.log("lemma: ", keywordsLemma);
     
-    let a = [{year: 'numeric'},{month: 'numeric'},{day: 'numeric'}];
     return {
-      dateMin: join(dateRange.min, a, '-'),
-      dateMax: join(dateRange.max, a, '-'),
+      dateMin: dateRange.min.toISOString(),
+      dateMax: dateRange.max.toISOString(),
       keywords: keywordsLemma,
       jurisdictions: jurisdictions,
       sources: sources
