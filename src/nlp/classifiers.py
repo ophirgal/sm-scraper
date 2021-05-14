@@ -14,14 +14,14 @@ def register(f):
 def all_yes(text, metadata):
     return {
         'relevant': True,
-        'score': 'yes',
+        'score': '1',
     }
 
 @register
 def all_no(text, metadata):
     return {
         'relevant': False,
-        'score': 'no',
+        'score': '0',
     }
 
 @register
