@@ -13,33 +13,23 @@ def getConnection(db_host, databaseName='smscraper'):
 def back_up(db_host, base_file_name):
     connection  = getConnection(db_host)
     cursor = connection.cursor()
+    
+    cwd = os.getcwd()
     cursor.execute(
-        "DELETE FROM scraped_data;"
-    )
-    cursor.execute(
-        "DELETE FROM key_words;"
-    )
-    cursor.execute(
-        "DELETE FROM entities;"
-    )
-    cursor.execute(
-        "COPY scraped_data FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_scraped_data.tsv';"
+        f"COPY scraped_data TO '{cwd}/env/data/smscraper/{base_file_name}_scraped_data.tsv';"
     )
     connection.commit()
     cursor.execute(
-        "COPY key_words FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_key_words.tsv';"
+        f"COPY key_words TO '{cwd}/env/data/smscraper/{base_file_name}_key_words.tsv';"
     )
     connection.commit()
     cursor.execute(
-        "COPY entities FROM " + "'"+ 
-         os.environ['PROJECT_DN'] + "/env/data/smscraper/db_backup_entities.tsv';"
+        f"COPY entities TO '{cwd}/env/data/smscraper/{base_file_name}_entities.tsv';"
     )
     connection.commit()
 
 
-if __name__ == '__main__':	
+if __name__ == '__main__':  
     parser = argparse.ArgumentParser()
     parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
     parser.add_argument('--base-file-name', default='db_backup', type=str)
@@ -49,4 +39,3 @@ if __name__ == '__main__':
     db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
 
     back_up(db_host, base_file_name)
-

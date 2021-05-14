@@ -23,6 +23,7 @@ db_linux: db_docker
 		--rm \
 		--ipc=host \
 		--net=host \
+		--name=db \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -139,6 +140,7 @@ dashboard_linux: dashboard_docker
 		--rm \
 		--ipc=host \
 		--net=host \
+		--name=dashboard \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \
@@ -212,9 +214,7 @@ nlp_linux: nlp_docker
 		--rm \
 		--ipc=host \
 		--name nlp \
-		--net smscraper-net \
-		-p 9001:9001 \
-		--ip 172.28.0.2 \
+		--net host \
 		-w '${PROJECT_DN}' \
 		-v '/dev/shm:/dev/shm' \
 		-v '${PROJECT_DN}:${PROJECT_DN}' \

@@ -129,6 +129,7 @@ def get_posts():
     jsonData = {'postList': postList}
     resp = Response(response=json.dumps(jsonData),
                     status=200, mimetype='application/json')
+    resp.headers['Access-Control-Allow-Origin'] = "*"
     return resp
 
 ##########################    OPHIR'S SECTION (BEGIN)    ######################

@@ -27,7 +27,8 @@ class Scraper:
         user_agent="testscript by u/JobQuick735", 
         username="JobQuick735",
         db_host='172.28.0.9',
-        nlp_host='172.28.0.2'):
+        nlp_host='172.28.0.2',
+        classifier='all_yes'):
         self.reddit = praw.Reddit(
             client_id=client_id, 
             client_secret=client_secret,
@@ -37,6 +38,8 @@ class Scraper:
         )
         self.db_host = db_host
         self.nlp_host = nlp_host
+        self.classifier = classifier
+        return
     
     def getConnection(self, databaseName='smscraper'):
         connection = psycopg2.connect(user="postgres",
@@ -54,7 +57,7 @@ class Scraper:
         )
         return response.json()
 
-    def get_relevance_score(self,text, classifier= 'has_police'):
+    def get_relevance_score(self,text, classifier='all_yes'):
         response = requests.get(
             url = f'http://{self.nlp_host}:9001/get-relevance',
             params ={
@@ -125,8 +128,8 @@ class Scraper:
     def write_post_to_db(self, hot_rank, subreddit, post):
         connection  = self.getConnection()
         cursor = connection.cursor()
-        relevenace_score_title = self.get_relevance_score(post.title)
-        relevenace_score_body = self.get_relevance_score(post.selftext)
+        relevenace_score_title = self.get_relevance_score(post.title, classifier=self.classifier)
+        relevenace_score_body = self.get_relevance_score(post.selftext, classifier=self.classifier)
         if relevenace_score_title['relevant'] or relevenace_score_body['relevant']:
             # Get lemmatized title and body
             title_lemmatized =  self.getLemmatized(post.title)
@@ -189,6 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
     parser.add_argument('--freq', default='1', type=int)
     parser.add_argument('--limit', default='10000', type=int)
+    parser.add_argument('--classifier', default='all_yes', type=str)
     parser.add_argument('--subreddits', nargs='+', default=['police', 'copwatch', 'policebrutality', '2020policebrutality', 'SocialJusticeInAction', 'Bad_Cop_No_Donut'])
     args = parser.parse_args()
     host_os = args.host_os
