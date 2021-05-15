@@ -44,7 +44,7 @@ def get_entities():
         for tok in toks:
             if tok in state_dict:
                 ents.append((state_dict[tok], start, 'STATE'))
-                print((state_dict[tok], start, 'STATE'))
+                # print((state_dict[tok], start, 'STATE'))
 
     resp = flask.Response(response=json.dumps(ents), status=200, mimetype='application/json')
     resp.headers['Access-Control-Allow-Origin'] = '*'
