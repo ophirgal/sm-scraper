@@ -61,7 +61,7 @@ def get_query(fields, params):
                 filtered_ids (id) AS 
                 (SELECT DISTINCT id 
                 FROM entities 
-                WHERE type = 'GPE' AND entity in {})
+                WHERE (type = 'GPE' OR type = 'STATE' OR type = 'LOC') AND entity in {})
                 {};
                 """.format(jurisdiction_list_string, select_query)
         elif len(params.get('jurisdictions')) == 0:
@@ -86,7 +86,7 @@ def get_query(fields, params):
                 ids_from_jurisdictions (id) AS 
                 (SELECT DISTINCT id 
                 FROM entities 
-                WHERE type = 'GPE' AND entity in {}),
+                WHERE (type = 'GPE' OR type = 'STATE' OR type = 'LOC') AND entity in {}),
 
                 filtered_ids (id) AS
                 (SELECT DISTINCT ids_from_keywords.id 
