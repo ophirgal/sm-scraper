@@ -53,7 +53,6 @@ right dependencies.
 
 ### How to run modules locally (without Docker)
 
--- Yiheng needs to fill this out.
 1. Make sure you have python and conda installed. If not, install the right version for your machine from https://www.python.org/downloads/ and https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html.
 2. For nlp module, 
     1. Use conda to install `jupyterlab, matplotlib, pandas, scipy, plotly, spacy, scikit-learn`.
