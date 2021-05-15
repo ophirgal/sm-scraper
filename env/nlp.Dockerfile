@@ -35,6 +35,7 @@ RUN apt-get install -y \
 # nlp dependencies
 RUN /opt/miniconda3/bin/pip install \
         'flask==1.1.2' \
+        'click==7.1.2' \
     && /opt/miniconda3/bin/conda install -c conda-forge \
         'spacy==3.0.5' \
     && python -m spacy download en_core_web_sm \
