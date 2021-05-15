@@ -54,4 +54,20 @@ right dependencies.
 ### How to run modules locally (without Docker)
 
 -- Yiheng needs to fill this out.
-
+1. Make sure you have python and conda installed. If not, install the right version for your machine from https://www.python.org/downloads/ and https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html.
+2. For nlp module, 
+    1. Use conda to install `jupyterlab, matplotlib, pandas, scipy, plotly, spacy, scikit-learn`.
+    2. Use pip to install `mysql-connector-python, mysqlclient, patool, pyunpack, flask`.
+    3. Run `python -m spacy download en_core_web_sm` and `python -m spacy download en_core_web_trf`.
+    4. Run `python3 -m src.nlp.main`
+3. For database module,
+    1. Install the right PostgreSQL for your machine from https://www.postgresql.org/download/
+    2. Run `psql postgres` to enter the postgre terminal. Then run `CREATE DATABASE smscraper;` to create the database.
+4. For scraper module,
+    1. Use pip to install `flask, psycopg2, praw, requests, pandas, numpy`
+    2. To run it with database locally, modify the second last line to make `db_host` = 'localhost'
+    3. Run `python3 -m src.scraper.scraper`
+5. For dashboard module,
+    1. Use pip to install `flask, psycopg2, requests`.
+    2. Run `python3 -m src.dashboard.server`.
+    
