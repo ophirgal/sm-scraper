@@ -118,11 +118,11 @@ def get_posts():
             'time_posted': p[4],
             'time_scraped': p[5],
             'title': p[6], 
-            'body': p[8], 
-            'author': p[10], 
-            'post_url': p[11],
+            'body': p[7], 
+            'author': p[8], 
+            'post_url': p[9],
             'linked_urls': "",
-            'comment_count': p[12],
+            'comment_count': p[10],
             'rating': "-1"
         })
 

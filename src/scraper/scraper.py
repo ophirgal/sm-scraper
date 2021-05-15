@@ -88,9 +88,7 @@ class Scraper:
         "time_posted" TEXT,
         "time_scraped" TEXT,
         "title_raw"  TEXT,
-        "title_lemmatized" TEXT,
         "body_raw" TEXT,
-        "body_lemmatized" TEXT,
         "author" TEXT,
         "post_url" TEXT,
         "comment_count" Int
@@ -141,13 +139,13 @@ class Scraper:
             cursor.execute(
                     '''DELETE FROM key_words WHERE id = %s''', [str(post.id)]
                 )
-            connection.commit()
+           
             for key_word in key_words:
                 row = [post.id, key_word, key_words[key_word]]
                 cursor.execute(
                     '''INSERT INTO key_words VALUES (%s, %s, %s)''', row
                 )
-                connection.commit()
+                
 
             entities = self.get_entities(post.selftext)
             entities_dict = {}
@@ -159,13 +157,13 @@ class Scraper:
             cursor.execute(
                     '''DELETE FROM entities WHERE id = %s''', [str(post.id)]
                 )
-            connection.commit()
+            
             for key, value in entities_dict.items():
                 row = [post.id, key[0], key[1], value]
                 cursor.execute(
                     '''INSERT INTO entities VALUES (%s, %s, %s, %s)''', row
                 )
-                connection.commit()
+               
 
             relevant_score = max(int(relevenace_score_title['score']),int(relevenace_score_body['score']))
             author_name = 'Anonymous'
@@ -174,14 +172,14 @@ class Scraper:
             post.title = post.title.replace('\t',' ')
             post.selftext = post.selftext.replace('\t',' ')
             row = [post.id,relevant_score,'reddit',subreddit,datetime.datetime.fromtimestamp(post.created),datetime.datetime.now(),post.title
-            ,title_lemmatized,post.selftext,body_lemmatized,author_name,post.url,len(post.comments.list())]
+            ,post.selftext,author_name,post.url,len(post.comments.list())]
             cursor.execute(
                     '''DELETE FROM scraped_data WHERE id = %s''', [str(post.id)]
                 )
-            connection.commit()
+            
             cursor.execute(
                     '''INSERT INTO scraped_data VALUES (%s,%s, %s, %s, %s, %s,
-                    %s, %s, %s,%s, %s,%s,%s)''',
+                    %s, %s, %s,%s, %s)''',
                     row)
             connection.commit()
 
