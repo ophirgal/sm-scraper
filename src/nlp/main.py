@@ -36,6 +36,15 @@ def get_entities():
         (ent.lemma_, ent.start, ent.label_)
         for ent in doc.ents
     ]
+    for i in range(len(ents)):
+        lemma,start,label = ents[i]
+        if not label in ['GPE', 'LOC']:
+            continue
+        toks = [l.lower() for l in lemma.split(' ')]
+        for tok in toks:
+            if tok in state_dict:
+                ents.append((state_dict[tok], start, 'STATE'))
+                print((state_dict[tok], start, 'STATE'))
 
     resp = flask.Response(response=json.dumps(ents), status=200, mimetype='application/json')
     resp.headers['Access-Control-Allow-Origin'] = '*'
