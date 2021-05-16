@@ -60,7 +60,8 @@ right dependencies.
     3. Run `python -m spacy download en_core_web_sm` and `python -m spacy download en_core_web_trf`.
     4. Run `python3 -m src.nlp.main`
 3. For database module,
-    1. Install the right PostgreSQL for your machine from https://www.postgresql.org/download/
+    1. Install the right PostgreSQL for your machine from
+       https://www.postgresql.org/download/, preferrably version 12 or newer.
     2. Run `psql postgres` to enter the postgre terminal. Then run `CREATE DATABASE smscraper;` to create the database.
 4. For scraper module,
     1. Use pip to install `flask, psycopg2, praw, requests, pandas, numpy`
