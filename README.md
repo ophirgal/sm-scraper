@@ -53,16 +53,18 @@ right dependencies.
 
 ### How to run modules locally (without Docker)
 
-1. Make sure you have python and conda installed. If not, install the right version for your machine from https://www.python.org/downloads/ and https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html.
+1. Make sure you have python and miniconda installed. If not, install the right version for your machine from https://www.python.org/downloads/ and https://conda.io/projects/conda/en/latest/user-guide/install/index.html.
 2. For nlp module, 
-    1. Use conda to install `jupyterlab, matplotlib, pandas, scipy, plotly, spacy, scikit-learn`.
-    2. Use pip to install `mysql-connector-python, mysqlclient, patool, pyunpack, flask`.
-    3. Run `python -m spacy download en_core_web_sm` and `python -m spacy download en_core_web_trf`.
-    4. Run `python3 -m src.nlp.main`
+    1. Install `mysql-client, mysql-server, libmysqlclient-dev`. For Mac users, simply do `brew isntall mysql`. For linux users, do `sudo apt-get install mysql-server mysql-server libmysqlclient-dev`.
+    2. Use conda to install `jupyterlab, matplotlib, pandas, scipy, plotly, spacy, scikit-learn`.
+    3. Use pip to install `mysql-connector-python, mysqlclient, patool, pyunpack, flask`.
+    4. Run `python -m spacy download en_core_web_sm` and `python -m spacy download en_core_web_trf`.
+    5. Run `python3 -m src.nlp.main`
 3. For database module,
     1. Install the right PostgreSQL for your machine from
        https://www.postgresql.org/download/, preferrably version 12 or newer.
-    2. Run `psql postgres` to enter the postgre terminal. Then run `CREATE DATABASE smscraper;` to create the database.
+    2. By default psql should have role `postgres`. But if not, enter psql terminal and run `CREATE ROLE postgres;`. In case the role doesn't have privilege, run `ALTER ROLE "postgres" with LOGIN;` and `GRANT ALL PRIVILEGES ON DATABASE smscraper TO postgres;`
+    3. Run `psql postgres` to enter the postgre terminal. Then run `CREATE DATABASE smscraper;` to create the database.
 4. For scraper module,
     1. Use pip to install `flask, psycopg2, praw, requests, pandas, numpy`
     2. To run it with a database installed locally, run 

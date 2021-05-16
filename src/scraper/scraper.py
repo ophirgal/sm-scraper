@@ -1,14 +1,14 @@
-# import praw
-# import datetime
-# import os
-# import pandas as pd 
-# import numpy as np 
-# import time
-# import datetime
-# import psycopg2
-# import requests
-# import json
-# import collections
+import praw
+import datetime
+import os
+import pandas as pd 
+import numpy as np 
+import time
+import datetime
+import psycopg2
+import requests
+import json
+import collections
 import argparse
 
 reddit = praw.Reddit(
@@ -199,8 +199,8 @@ if __name__ == '__main__':
     freq = args.freq
     limit = args.limit
     subreddits = args.subreddits
-    print(subreddits)
     nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
+    nlp_host = 'localhost' if local else nlp_host
     db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
     db_host = 'localhost' if local else db_host
     print('db host =', db_host)
