@@ -276,10 +276,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host-os', default='mac', type=str,
                         choices=['windows', 'mac', 'linux'])
+    parser.add_argument('--local', default='false', type=str, choices=['true', 'false'])
     args = parser.parse_args()
+    local = args.local == 'true'    
     host_os = args.host_os
     app.config['db_host'] = 'localhost' if host_os == 'linux' else '172.28.0.9'
+    app.config['db_host'] = 'localhost' if local else app.config['db_host']
     app.config['nlp_host'] = 'localhost' if host_os == 'linux' else '172.28.0.2'
+    print('db host =', app.config['db_host'])
 
     # try to connect to DB
     try:

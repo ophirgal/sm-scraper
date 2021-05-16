@@ -64,9 +64,10 @@ right dependencies.
     2. Run `psql postgres` to enter the postgre terminal. Then run `CREATE DATABASE smscraper;` to create the database.
 4. For scraper module,
     1. Use pip to install `flask, psycopg2, praw, requests, pandas, numpy`
-    2. To run it with database locally, modify the second last line to make `db_host` = 'localhost'
-    3. Run `python3 -m src.scraper.scraper`
+    2. To run it with a database installed locally, run 
+    `python3 -m src.scraper.scraper --local=true`.
 5. For dashboard module,
     1. Use pip to install `flask, psycopg2, requests`.
-    2. Run `python3 -m src.dashboard.server`.
+    2. To run it with a database installed locally, run 
+    `python3 -m src.dashboard.server --local=true`.
     

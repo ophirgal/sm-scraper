@@ -1,14 +1,14 @@
-import praw
-import datetime
-import os
-import pandas as pd 
-import numpy as np 
-import time
-import datetime
-import psycopg2
-import requests
-import json
-import collections
+# import praw
+# import datetime
+# import os
+# import pandas as pd 
+# import numpy as np 
+# import time
+# import datetime
+# import psycopg2
+# import requests
+# import json
+# import collections
 import argparse
 
 reddit = praw.Reddit(
@@ -187,12 +187,14 @@ if __name__ == '__main__':
     
     # Define and parse (optional) arguments for the script 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--local', default='false', type=str, choices=['true', 'false'])
     parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
     parser.add_argument('--freq', default='1', type=int)
     parser.add_argument('--limit', default='10000', type=int)
     parser.add_argument('--classifier', default='all_yes', type=str)
     parser.add_argument('--subreddits', nargs='+', default=['police', 'copwatch', 'policebrutality', '2020policebrutality', 'SocialJusticeInAction', 'Bad_Cop_No_Donut'])
     args = parser.parse_args()
+    local = args.local == 'true'
     host_os = args.host_os
     freq = args.freq
     limit = args.limit
@@ -200,6 +202,8 @@ if __name__ == '__main__':
     print(subreddits)
     nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
     db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
+    db_host = 'localhost' if local else db_host
+    print('db host =', db_host)
 
     scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host, classifier=args.classifier)
     scrapeObj.scrape(freq=freq, limit=limit, subreddits=subreddits)
