@@ -201,7 +201,7 @@ if __name__ == '__main__':
     nlp_host = 'localhost' if host_os == 'linux' else '172.28.0.2'
     db_host = 'localhost' if host_os == 'linux' else '172.28.0.9'
 
-    scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host)
+    scrapeObj = Scraper(nlp_host=nlp_host, db_host=db_host, classifier=args.classifier)
     scrapeObj.scrape(freq=freq, limit=limit, subreddits=subreddits)
 
 

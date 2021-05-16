@@ -26,3 +26,10 @@ def state_dict():
 state_dict = state_dict()
 
 
+# stopwords
+stopwords = {
+    line.lower() for line in read('./src/nlp/stopwords.txt').split('\n')
+    if line and line[0]!='#'
+}
+
+

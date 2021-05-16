@@ -40,6 +40,9 @@ def get_entities():
         lemma,start,label = ents[i]
         if not label in ['GPE', 'LOC']:
             continue
+        if lemma.lower() in state_dict:
+            ents.append((state_dict[lemma.lower()], start, 'STATE'))
+            continue
         toks = [l.lower() for l in lemma.split(' ')]
         for tok in toks:
             if tok in state_dict:
