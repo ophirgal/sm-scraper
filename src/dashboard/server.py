@@ -144,15 +144,9 @@ def _json_response(data):
 
 @ app.route('/get-stats')
 def get_stats():
-    # # stale request handler
-    # global reqState
-    # thisState = int(request.args.get('reqState'))
-    # if reqState != thisState:
-    #     print("STALE REQ: ABORTING")
-    #     return
 
     cur = conn.cursor()
-    relevance_threshold = 3  # TODO: change this? (arbitrary threshold)
+    relevance_threshold = 50  # can make this user-specified in future versions
     filtered_posts = get_query("*", request.args)[::-1].replace(';','',1)[::-1]
 
     # get total posts selected
@@ -171,29 +165,23 @@ def get_stats():
     cur.execute(query)
     posts_scraped = int(cur.fetchone()[0])
 
-    # get total posts relevant
-    query = f'select count(*) from scraped_data \
+    # get mean relevance from filtered posts
+    query = f'select avg(cast(relevance_score as int)) from ({filtered_posts}) x \
         where cast(relevance_score as int) >= {relevance_threshold};'
     cur.execute(query)
-    posts_relevant = int(cur.fetchone()[0])
+    mean_relevance = float(cur.fetchone()[0])
 
     data = {
         'posts_selected': posts_selected,
         'users_selected': users_selected,
         'posts_scraped': posts_scraped,
-        'posts_relevant': posts_relevant
+        'mean_relevance': mean_relevance
     }
     return _json_response(data)
 
 
 @ app.route('/get-date-histogram')
 def get_date_histogram():
-    # # stale request handler
-    # global reqState
-    # thisState = int(request.args.get('reqState'))
-    # if reqState != thisState:
-    #     print("STALE REQ: ABORTING")
-    #     return
 
     min_date = request.args.get('minDate')
     max_date = request.args.get('maxDate')
@@ -238,17 +226,11 @@ def get_date_histogram():
 
 @ app.route('/get-word-distribution')
 def get_word_distribution():
-    # # stale request handler
-    # global reqState
-    # thisState = int(request.args.get('reqState'))
-    # if reqState != thisState:
-    #     print("STALE REQ: ABORTING")
-    #     return
+   
     word_type = request.args.get('type')
 
     cur = conn.cursor()
     filtered_posts = get_query("scraped_data.id", request.args)[::-1].replace(';','',1)[::-1]
-    # get total posts relevant
     query = f' \
         with s(id) as ({filtered_posts}) \
         select key_word, sum(count) as count from key_words k \
