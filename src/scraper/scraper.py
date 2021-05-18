@@ -28,7 +28,7 @@ class Scraper:
         username="JobQuick735",
         db_host='172.28.0.9',
         nlp_host='172.28.0.2',
-        classifier='all_yes'):
+        classifier='tfidf'):
         self.reddit = praw.Reddit(
             client_id=client_id, 
             client_secret=client_secret,
@@ -57,7 +57,7 @@ class Scraper:
         )
         return response.json()
 
-    def get_relevance_score(self,text, classifier='all_yes'):
+    def get_relevance_score(self,text, classifier='tfidf'):
         response = requests.get(
             url = f'http://{self.nlp_host}:9001/get-relevance',
             params ={
@@ -191,7 +191,7 @@ if __name__ == '__main__':
     parser.add_argument('--host-os', default='mac', type=str, choices=['windows', 'mac', 'linux'])
     parser.add_argument('--freq', default='1', type=int)
     parser.add_argument('--limit', default='10000', type=int)
-    parser.add_argument('--classifier', default='all_yes', type=str)
+    parser.add_argument('--classifier', default='tfidf', type=str)
     parser.add_argument('--subreddits', nargs='+', default=['police', 'copwatch', 'policebrutality', '2020policebrutality', 'SocialJusticeInAction', 'Bad_Cop_No_Donut'])
     args = parser.parse_args()
     local = args.local == 'true'
